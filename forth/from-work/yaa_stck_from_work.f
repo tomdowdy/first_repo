@@ -26,7 +26,7 @@ Marker reset
 : bot stk 2 cells + @ ;
 : pic ( n -- x ) 2+ cells stk + @  ;
 : stk.remaining stk 2@ - ;
-: look stk dup 2 cells + swap @ 0 do dup >r @ r> cell + loop drop ;
+: look stk dup 2 cells + swap @ 0 ?do dup >r @ r> cell + loop drop ;
 : cnt stk @ ;
 
 hex
