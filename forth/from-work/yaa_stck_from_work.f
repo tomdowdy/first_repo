@@ -33,6 +33,7 @@ Marker reset
 : -rots ['] get 3 times -rot ['] put 3 times ;
 : stk.prev stk dp ! ,pop to stk ;
 : :stk stk , stk.new ;
+
 hex
 22 stk.new
 Aa put bb put
