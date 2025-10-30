@@ -28,6 +28,7 @@ Marker reset
 : stk.remaining stk 2@ - ;
 : look stk dup 2 cells + swap @ 0 ?do dup >r @ r> cell + loop drop ;
 : cnt stk @ ;
+: swp stk dup @ cells + dup 2@ swap rot 2! ;
 
 hex
 22 stk.new
