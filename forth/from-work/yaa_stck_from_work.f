@@ -5,7 +5,9 @@ Marker reset
 : ,peek here cell - @ ;
 : ,drop here cell - dp ! ;
 : ,pic 1+ cells here swap - @ ;
-: ,pop here cell - dup @ swap dp ! ; 
+: ,pop here cell - dup @ swap dp ! ;
+: stk.prev stk dp ! ,pop to stk ;
+: :stk stk , stk.new ;
 
 : times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
 : tims ( n <name> -- * ) bl word find 0= if drop exit then swap times ;
