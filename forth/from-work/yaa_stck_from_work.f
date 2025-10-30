@@ -5,7 +5,8 @@ Marker reset
 : ,drop here cell - dp ! ;
 : ,pic 1+ cells here swap - @ ;
 : ,pop here cell - dup @ swap dp ! ;
-
+ \ ABOVE IS ONLY FOR DEVELOPMENT
+ 
 : times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
 : tims ( n <name> -- * ) bl word find 0= if drop exit then swap times ;
 : cs 0sp ;
@@ -33,6 +34,7 @@ Marker reset
 : stk.prev stk dp ! ,pop to stk ;
 : :stk stk , stk.new ;
 
+\ BELOW IS ONLY FOR DEVELOPMENT
 hex
 22 stk.new
 Aa put bb put
