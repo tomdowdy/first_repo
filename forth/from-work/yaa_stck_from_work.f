@@ -31,7 +31,7 @@ Marker reset
 : swp stk dup @ cells + dup 2@ swap rot 2! ;
 : rots ['] get 3 times rot ['] put 3 times ;
 : -rots ['] get 3 times -rot ['] put 3 times ;
-: stk.prev stk dup @ 0= if cr ." No more stacks." cr abort then dp ! ,pop to stk ;
+: stk.prev stk dup @ O<> if cr ." No more stacks." cr abort then dp ! ,pop to stk ;
 : :stk stk , stk.new ;
 
 \ BELOW IS ONLY FOR DEVELOPMENT
