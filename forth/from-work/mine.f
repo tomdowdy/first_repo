@@ -61,21 +61,24 @@ marker mystuff
 	dump
 	r> base ! ;
 [then]
-\ : hdr. 
-	\ $ ff and $ f 0 do dup . ( dup 1 + 4 mod 0= if 8 emit $ 21 emit then ) 1 + $ ff and loop .
+\ \ : hdr. 
+\ 	\ $ ff and $ f 0 do dup . ( dup 1 + 4 mod 0= if 8 emit $ 21 emit then ) 1 + $ ff and loop .
+\ \ ; 
+\ : _hdr. 
+\ 	$ ff and $ f 0 do dup 0 <# # #s #> type space 1 + $ ff and loop 0 <# # #s #> type
 \ ; 
-: _hdr. 
-	$ ff and $ f 0 do dup 0 <# # #s #> type space 1 + $ ff and loop 0 <# # #s #> type
-; 
-: dmp $ 80
-	base @ >r 
-	hex 
-	cr ."           00 01 02 03|04 05 06 07|08 09 0A 0B|0C 0D 0E 0F " cr
+\ : dmp $ 80
+\ 	base @ >r 
+\ 	hex 
+\ 	cr ."           00 01 02 03|04 05 06 07|08 09 0A 0B|0C 0D 0E 0F " cr
 
-	." -Address- " over _hdr. ."   ---chars---" cr
-	   ." ------------------------------------------------------------------------------"
-	dump
-	r> base ! ;
+\ 	." -Address- " over _hdr. ."   ---chars---" cr
+\ 	   ." ------------------------------------------------------------------------------"
+\ 	dump
+\ 	r> base ! ;
+
+include C:\GitHub\first_repo\forth\from-work\dmp.f
+
 : dmpw ' >code dmp ; ( 'name' -- cfa mem dump )
 : dmpxt >code dmp ; ( xt --- cfa mem dump )
 : name. >name count type ; ( xt -- 'name' )
@@ -112,7 +115,7 @@ hex
 : swp stk dup @ cells + dup 2@ swap rot 2! ;
 : rots ['] get 3 times rot ['] put 3 times ;
 : -rots ['] get 3 times -rot ['] put 3 times ;
-: stk.prev stk dup @ O<> if cr ." No more stacks." cr abort then dp ! ,pop to stk ;
+: stk.prev stk dup @ 0<> if cr ." No more stacks." cr abort then dp ! ,pop to stk ;
 : :stk stk , stk.new ;
 
 \ The ] square bracket is a substitute for the > sign.
