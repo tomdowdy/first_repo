@@ -84,59 +84,47 @@ marker mystuff
 $ 68 ' #cols >body ! ( change width of words output )
 : dw dmpw ;
 : dx dmpxt ;
-: cs 0sp ;
 : wl words.like ;
 
 hex
-
+ 
 : times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
+: tims ( n <name> -- * ) bl word find 0= if drop exit then swap times ;
+: cs 0sp ;
 : cp 0sp page ;
 
-\ Very simple array system 
-\ Structure:     | count/max (sid)   |    n cells    |
-\ Supports two types of array. 
-\ One is name based, arr.new, where array is created using create and is referred to by name.
-\ The other, arr.noname,  is address based where array is created using allot.
-\ 
-\ The name based array used the words that require an sid to be put on the stack done by inputing the array name
-\ The address based can be used with the name based words (putt, gett, peekk, etc.) but is really inteded 
-\ to be used with the put, get, pic, etc. words. In order to use these words, the address (sid) of the desired array is 
-\ first stored in the variable arra .
+0 value stk
+: stk.noname ( n -- sid ) here 0 , over , swap 2+ cells allot ;
+: psh ( x sid -- ) dup 2@ = if cr ." Full." cr abort then 1 over +! ( n sid ) r> 2+ cells + ! ;
+: pop ( sid -- x ) dup @ dup 0= if cr ." Empty." cr abort then 0 1 -  over +! r> 1+ cells + @ ;
 
-\ A support array, arrs, is created to store the array addresses for those without a name.
+: stk.new ( n -- ) stk.noname to stk ;
+\ : put ( x -- ) stk dup 2@ = if cr ." Full." cr abort then dup @ 1+ dup >r ( n sid nxt ) over ! r> 1+ cells + ! ;
+: put ( x -- ) stk dup 2@ dup >r = if cr ." Full." cr abort then 1 over +! ( n sid ) r> 2+ cells + ! ;
+\ : get ( -- x ) stk dup @ dup 0= if cr ." Empty." cr abort then dup >r 1- over ! r> 1+ cells + @ ; 
+: get ( -- x ) stk dup @ dup >r 0= if cr ." Empty." cr abort then 0 1 -  over +! r> 1+ cells + @ ;
+: top stk dup @ 1+ cells + @ ;
+: bot stk 2 cells + @ ;
+: pic ( n -- x ) 2+ cells stk + @  ;
+: stk.remaining stk 2@ - ;
+: look stk dup 2 cells + swap @ 0 ?do dup >r @ r> cell + loop drop ;
+: cnt stk @ ;
+: swp stk dup @ cells + dup 2@ swap rot 2! ;
+: rots ['] get 3 times rot ['] put 3 times ;
+: -rots ['] get 3 times -rot ['] put 3 times ;
+: stk.prev stk dup @ O<> if cr ." No more stacks." cr abort then dp ! ,pop to stk ;
+: :stk stk , stk.new ;
 
-Marker array.stuff
-
-0 Value arra \ variable to hold address of active array
-
-: arr.noname ( n -- ) here dup >r 0 swap w! dup r@ cell 2 / + w! 1+ cells allot r> ; \ like arr.new but with no name, just address
-: arr.new ( n <name> -- ) create latest name> >body ( n sid ) dup >r 0 swap w! ( n ) dup r> cell 2 / + w! 2 + cells allot ; 
-: arr.stats ( sid -- count max ) @ dup $ ffff and swap $ 10 >> ; 
-: arr.full.err ( count max -- ) over = if abort" Array full." then ;
-: arr.empty.err ( count max -- count ) over 0= if abort" Array empty." then drop ; 
-: arr.count ( sid -- n ) w@ ;
-: arr.reset ( sid -- ) 0 swap w! ;
-
-: gett ( sid -- x ) dup ( arr.stats arr.empty.err ) w@ (  sid count ) 2dup 2>r cells + @ 2r> 1 - swap  w! ;
-: putt ( x sid -- ) dup ( arr.stats arr.full.err ) w@ ( x sid count ) 2dup 2>r 1+ cells + ! 2r> 1+ swap w! ;
-: peekk ( sid -- x) dup arr.stats arr.empty.err cells + @ ;
-\ : picc ( n sid -- x ) dup arr.stats over 1- 4 pick swap > if Abort" Index exceeds array count." then arr.empty.err ( n sid count ) rot - cells + @ ;
-: picc ( n sid -- x ) dup arr.stats over 1- 4 pick swap > if Abort" Index exceeds array count." then arr.empty.err ( n sid count ) drop swap 1+ cells + @ ;
-: arr.dump ( sid -- x** ) dup arr.count 0= if abort" Array empty." then dup , w@ 0 do dp @ cell - @ i 1+ cells + @ loop ,drop ;
-: arr.load ( n*x n sid -- ) , 0 do dp @ cell - @ putt Loop ,drop ;
-\ : arr.load ( n*x n sid -- ) 2dup w! ,  0 do i 1+ cells dp @ cell - @ + ! loop 0 cell - dp +! ;
-\ : arr.load ( n*x n sid -- ) , dup >r 0 do i pick ,peek putt loop ,drop r> ndrop ;
-
-\ prior to using these set arra  to sid
-: get ( -- x ) arra  dup ( arr.stats arr.empty.err ) w@ (  sid count ) 2dup 2>r cells + @ 2r> 1 - swap  w!  ;
-: put ( x -- ) arra  dup ( arr.stats arr.full.err ) w@ ( x sid count ) 2dup 2>r 1+ cells + ! 2r> 1+ swap w! ;
-: pic arra picc ;
-: pek 0 pic ;
-: arr.dmp arra  arr.dump ;
-: arr.lod ( n*x n -- ) arra  arr.load ;
-: arr.cnt arra arr.count ;
-
-22 arr.new arrs \ array to store array addresses in, 22 hex max
+\ The ] square bracket is a substitute for the > sign.
+\ ] is easier since it is unshifted.
+: ]pada pad ! ;
+: ]padb pad cell + ! ;
+: ]padc pad 2 cells + ! ;
+: ]padd pad 3 cells + ! ;
+: pada] pad @ ;
+: padb] pad cell + @ ;
+: padc] pad 2 cells + @ ;
+: padd] pad 3 cells + @ ;
 
 : reset s" _reset" evaluate s" marker _reset" evaluate ;
 : 0reset 0sp reset ;
