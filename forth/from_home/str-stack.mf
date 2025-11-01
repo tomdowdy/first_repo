@@ -1,0 +1,201 @@
+\ string stack   geforth 6.3.2013, f83 1986 mka
+\ 09.03.2013 geht im Prinzip wieder. debugging nötig.
+\ 10.03.2013 alles ok
+
+: -- bye ;
+: ok ; \ tested ok
+
+\ vocabulary stringstackwords  stringstackwords definitions
+
+decimal
+
+: strhlp ."  create-stringstack sp$ tos$ bot$ !csp$ ?csp$ ?ofl ?lim ? mty ?fit skip$ pick$ top$ sec$ depth$ last$ topcount$ " ;
+: strhlp1 ."  toplength$ toploc$ get$ put$ extract$ patch$ ''push ''pop ''char ''@ ''! ''copy ''empty ''clear ''drop ''pick ''dup ''over " ;
+: strhlp2 ." ''roll ''rolldown ''swap ''rot ''join ''split ''patch ''extract ''insert ''ill ''blank ''append ''infront ''enroll ''blanks ''supp ''l ''r " ;
+: strhlp3 ."  compare$ ''compare ''= ''< ''<= ''type ''. lines ''at ''.r ''.l ''expect ''.s ''printline ?$ ''dump " ;
+: str-help strhlp strhlp1 strhlp2 strhlp3 ;
+
+: ($   postpone ( ; immediate
+
+false [if]
+		Stringstack structure
+		Stack is growing down in memory space.
+		---------------------------------------------------
+
+		here3           (bot$)              <-- bot$ is saved here
+		here2:          sp$                 <-- 'SP$ is pointing there
+		top of stack:   s0          top$
+		s1          sec$
+		...
+		sn
+		bot of stack:   her0+cell   bot$    <-- end of string stack
+		here0:          (sp$)               <-- sp$ location is saved here
+		header: <name>
+
+		---------------------------------------------------
+[then]
+
+variable 'SP$       \ holds string stack pointer location.
+variable CSP$       \ store a current stackpointer there. Stringstack "marker".
+: create-stringstack    ( "name   n -- ) 
+   create  
+   here   0 ,           ( -- n here0 )
+   swap allot align     ( -- here0 )
+   here over !          \ save sp$ adr to her0
+   here 'sp$ !          \ init 'pointer
+   here ,               \ init sp$ to itself
+   cell+ ,              \ save bottom adr
+   does> @ 'sp$ !  ;
+
+1000 create-stringstack $S
+ok
+
+\ stringstack basics (stringstack unchanged).
+: SP$   ( -- adr )  'sp$ @ ;
+: TOS$  ( -- adr )  sp$ @ ;
+: BOT$  ( -- adr )  sp$ cell+ @ ;
+: !CSP$ ( -- )      tos$ csp$ ! ;  \ store current stack pointer
+: ?CSP$ ( -- )      tos$ csp$ @ <> abort" $stack changed" ;
+: ?OFL  ( adr -- )  bot$ u< abort" $overflow" ;
+: ?LIM  ( len -- )  $FF00 and abort" $toolong" ;                    ( ???)
+: ?MTY  ( adr -- )  sp$ >= abort" $underflow" ;
+: ?FIT  ( len -- )  tos$ c@ u> abort" $does'nt fit in tos$ " ;
+: SKIP$ ( adr1 -- adr2 ) count + ;
+: PICK$ ( nth -- adr )
+     tos$   begin dup ?mty swap ?dup while 1- swap skip$  repeat ;
+: TOP$  ( -- adr )  0 pick$ ;
+: SEC$  ( -- adr )  1 pick$ ;
+: DEPTH$  ( -- n ) ($ sn..s0 ) 
+     0 tos$   begin dup sp$ - while skip$ swap 1+ swap repeat   drop ;
+: LAST$    ( -- adr )  depth$ 1- pick$ ;
+ok
+
+\ adressing top string
+: TOPCOUNT$  ( -- adr+1 len ) ($ -- ) top$ count ;
+: TOPLENGTH$ ( -- len ) ($ -- ) top$ c@ ;
+: TOPLOC$  ( +n -- adr ) ($ -- )  top$ + ;
+: GET$  ( n -- char ) toploc$ c@ ;
+: PUT$  ( char n -- ) toploc$ c! ;
+\ use to move part of strings around
+: EXTRACT$  ( n1 n2 -- from.adr len ) 
+\    toplength$ umin over - 1+ swap toploc$ swap ;
+    toplength$ min over - 1+ swap toploc$ swap ;
+: PATCH$    ( len n -- to.adr len ) 
+    2dup + ?fit toploc$ swap ;
+ok
+
+\ move strings to and from top of stringstack
+\ (number of items on stringstack changed!)
+: "PUSH ( from.adr len -- ) ($ -- s ) \ push string to stringstack.
+     dup ?lim   tos$ over - 1-   dup ?ofl   dup sp$ !   place ;
+: "POP    ( -- from.adr len ) ($ s -- ) 
+     topcount$ 2dup + sp$ ! ;
+: "CHAR   ( char -- ) ($ -- s )  here ( dumy adr) 1 "push topcount$ drop c! ;
+: "@      ( from.buffer -- ) ($ -- s ) count "push ;
+: "!      ( to.buffer -- ) ($ s -- ) "pop rot place ;
+: "COPY  ( to.buffer -- ) ($ s -- s ) \ non destructive
+    topcount$ rot place ;
+ok
+
+\ stringstack operators
+: "EMPTY  ( -- ) ($ sn..s0 -- ) sp$ dup ! ;                         ok
+: "CLEAR  ( -- ) ($ sn..sm..s0 -- sn..sm ) csp$ @ sp$ ! ;           ok
+: "DROP   ( -- ) ($ s -- ) "pop 2drop ;                             ok
+: "PICK   ( n -- ) ($ sm..sn..s0 -- sm..sn..s0 sn ) pick$ "@ ;      ok
+: "DUP    ( -- ) ($ s -- s s ) 0 "pick ;                            ok
+: "OVER   ( -- ) ($ a b -- a b a ) 1 "pick ;                        ok
+: "ROLL   ( n -- ) ($ sn..s0 -- sn-1..s0 sn )                       ok
+     pick$ dup "@  tos$ tuck - "pop + swap cmove> ;
+: "ROLLDOWN ( n -- ) ($ sn..s1 s0 -- s0 sn .. s1 )                  ok
+     pick$ skip$ dup topcount$ + tuck - tos$ swap
+     "dup cmove "pop rot over - 1- place ;
+: "SWAP  ( -- ) ($ a b -- b a ) 1 "roll ;                           ok
+: "ROT   ( -- ) ($ a b c -- b c a ) 2 "roll ;                       ok
+
+\ manipulate top strings
+: "JOIN ( -- ) ($ a b -- ab )                                           ok
+     tos$ dup >r "pop dup toplength$ + r> c! over sp$ ! 1+ cmove> ; 
+: "SPLIT ( n -- ) ($ ab -- a b )                                        ok
+     toplength$ over - over toploc$ >r >r
+     "pop drop swap over 2 -  dup sp$ ! place r> r> c! ;
+: "PATCH    ( n -- ) ($ abcd xx -- axxd ) "pop rot patch$ cmove ;       ok
+: "EXTRACT  ( n1 n2 -- ) ($ asb -- s ) extract$ "drop "push ;           ok
+: "INSERT   ( n -- ) ($ ab s -- asb )                                   ok
+     "swap "split "rot "swap "join "join ;
+
+\ change top string
+: "FILL     ( c -- ) ($ s -- cc ) \ replace characters with c           ok
+    topcount$ rot fill ;
+: "BLANK    ( -- ) ($ s -- bl ) \ replace characters with blanks        ok
+     bl "fill ;
+\    46 "fill ; \ testing
+: "APPEND   ( char -- ) ($ s1 -- s2 ) "char "swap "join ;               ok
+: "INFRONT  ( char -- ) ($ s1 -- s2 ) "char "join ;                     ok
+: "ENROL    ( char -- ) ($ s - s' )                                     ok
+     topcount$ 1- 2dup >r dup 1+ swap r> cmove + c! ;
+: "BLANKS   ( len -- ) ($ -- s ) \ make blank string                    ok
+    here swap "push "blank ;
+: "SUPP     ( len -- ) ($ s -- s bl ) \ make supplement blank string    ok
+    toplength$ - 0 max "blanks ;
+: "L        ( len -- ) ($ s -- s_bl )  "supp "swap "join ;              ok
+: "R        ( len -- ) ($ s -- bl_s )  "supp "join ;                    ok
+
+\ special string types
+\ : ""        ( -- ) ($ -- s )    0 0 "push ;
+\ : "D        ( d -- ) ($ -- s )  (d.) "push ;
+\ : "0        ( -- ) ($ -- s )    0 0 "d ;
+\ : "NUMBER   ( -- d ) ($ s -- ) 
+\     lenght$ toploc$ c@ bl = not IF bl "append THEN
+\     "pop drop number ;
+\ : (D.PRICE)  ( d -- adr len )
+\      tuck dabs <# # # ascii . hold #s rot sign #> ;
+\ : "PRICE ( -- ) ($ s -- $US ) "number (d.price) "push ;
+
+\ string comparators
+: COMPARE$ ( -- n ) ($ s1 s0 -- s1 s0 )                                 ok
+    top$ count sec$ count  compare  ;
+: "COMPARE ( --- n ) ($ s1 s2 -- )  compare$ "drop "drop ;              ok
+: "=       ( -- f ) ($ s1 s2 -- )   "compare 0= ;
+: "<       ( -- f ) ($ s1 s2 -- )   "compare 0< ;
+: "<=      ( -- f ) ($ s1 s2 -- )   "compare dup 0< swap 0= or ;
+ok
+
+\ string compiling layer  ( not implemented here)
+\ string definig words    ( not done here )
+\ stringstack I/O
+: "TYPE  ( -- ) ($ s -- s ) \ non destructive info of tos$.             ok
+     topcount$ type ;  ok
+: ".     ( -- ) ($ s -- )   "pop type  ;                                ok
+\ : "AT    ( col row -- ) ($ s -- )  at-xy ". ;                           ok
+: lines 0 ?do cr loop ;
+: "AT    ( col row -- ) ($ s -- )  lines spaces ". cr ;               ok
+: ".R    ( len -- ) ($ s -- )  "R ". ;                                  ok
+: ".L    ( len -- ) ($ s -- )  "L ". ;                                  ok
+\ : "EXPECT   ( len -- ) ($ -- s )                                        ok
+\   "blanks  topcount$ expect  "pop drop span @ "push ;
+
+\ string input special ( no)
+\ string debugging toolbox
+defer (.s$)
+: ".S   ( -- ) ($ -- ) \ show strings on stringstack                    ok
+     cr depth$ 0= IF ." Empty$ " exit then
+     tos$  BEGIN depth$ while (.s$) REPEAT   sp$ ! space cr cr ;
+: "PRINTLINE  ( -- ) cr ". ;                                            ok
+  ' "printline is (.s$)
+: ?$  ( adr  -- ) ($ s -- s ) \ check whats there                       ok
+     count type ;                                                       ok
+: "DUMP  ( -- ) ($ s -- s ) \ dump top of stringstack                   ok
+    top$ toplength$ 1+ dump ;
+
+false [if]
+\ F83 trace not implemented
+\ words cr cr
+true [if]  \ examples
+s" eins" "push
+s" zwei" "push
+s" drei" "push
+s" vier" "push
+".s  .s
+[then]
+( finis)
+[then]

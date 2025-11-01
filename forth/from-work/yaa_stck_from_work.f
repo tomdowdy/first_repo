@@ -38,6 +38,10 @@ variable stk 0 stk !
 : top stk @ dup @ 1+ cells + @ ;
 : bot stk @ 2 cells + @ ;
 : pic ( n -- x ) stk @ dup @ rot - 1+ cells + @ ; 
+
+: qq dup stk @ dup >r 2@ >r 0 swap between 0= 
+        if ." bad" abort then r> r> rot - 1+ cells + @ ;
+
 : stk.remaining stk @ 2@ - ;
 : look stk @ dup 0= if drop cr ." No stacks." cr abort then 
         dup 2 cells + swap @ 0 ?do dup >r @ r> cell + loop drop ;
