@@ -1,4 +1,4 @@
-marker pad-stuff
+\ marker pad-stuff
 
 \ The ] square bracket is a substitute for the > sign.
 \ ] is easier since it is unshifted.

@@ -2,7 +2,8 @@ marker mystuff
 
 : allot- cells negate allot ;
 \ : ,pop here [ 1 cells literal ] - @ [ 0 1 cells - literal ] dp +! ( allot ) ;
-: ,pop 0 cell - dp +! dp @ @ ;
+\ : ,pop 0 cell - dp +! dp @ @ ;
+: ,pop 0 cell - dp dup -rot +! @ @ ;
 : ,npush 0 do , loop ;
 : ,npop 0 do ,pop loop ;
 : ,peek dp @ cell - @ ;
@@ -12,6 +13,8 @@ marker mystuff
 : ,drop 0 cell - dp +! ; \ dictionary drop
 : ,ndrop cells negate allot ;
 : ,swap ,pop ,pop swap , , ;
+: ,rot ,pop ,pop ,pop rot , , , ;
+: ,-rot ,pop ,pop ,pop -rot , , , ;
 : ndrop 0 do drop loop ; \ stack multiple drop.
 : ntuck ( s*j x n -- q*j x n*j ) dup depth 3 - > if cr ." Will cause stack underflow." cr throw exit then swap >r dup >r 0 ?do , loop r> r> swap 0 ?do ,pop loop ;
 : >bos depth 1 - ntuck ;
@@ -61,21 +64,6 @@ marker mystuff
 	dump
 	r> base ! ;
 [then]
-\ \ : hdr. 
-\ 	\ $ ff and $ f 0 do dup . ( dup 1 + 4 mod 0= if 8 emit $ 21 emit then ) 1 + $ ff and loop .
-\ \ ; 
-\ : _hdr. 
-\ 	$ ff and $ f 0 do dup 0 <# # #s #> type space 1 + $ ff and loop 0 <# # #s #> type
-\ ; 
-\ : dmp $ 80
-\ 	base @ >r 
-\ 	hex 
-\ 	cr ."           00 01 02 03|04 05 06 07|08 09 0A 0B|0C 0D 0E 0F " cr
-
-\ 	." -Address- " over _hdr. ."   ---chars---" cr
-\ 	   ." ------------------------------------------------------------------------------"
-\ 	dump
-\ 	r> base ! ;
 
 include C:\GitHub\first_repo\forth\from-work\dmp.f
 
@@ -91,43 +79,9 @@ $ 68 ' #cols >body ! ( change width of words output )
 
 hex
  
-: times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
-: tims ( n <name> -- * ) bl word find 0= if drop exit then swap times ;
-: cs 0sp ;
-: cp 0sp page ;
+include C:\GitHub\first_repo\forth\from-work\yaa_stck_from_work.f
 
-0 value stk
-: stk.noname ( n -- sid ) here 0 , over , swap 2+ cells allot ;
-: psh ( x sid -- ) dup 2@ = if cr ." Full." cr abort then 1 over +! ( n sid ) r> 2+ cells + ! ;
-: pop ( sid -- x ) dup @ dup 0= if cr ." Empty." cr abort then 0 1 -  over +! r> 1+ cells + @ ;
-
-: stk.new ( n -- ) stk.noname to stk ;
-\ : put ( x -- ) stk dup 2@ = if cr ." Full." cr abort then dup @ 1+ dup >r ( n sid nxt ) over ! r> 1+ cells + ! ;
-: put ( x -- ) stk dup 2@ dup >r = if cr ." Full." cr abort then 1 over +! ( n sid ) r> 2+ cells + ! ;
-\ : get ( -- x ) stk dup @ dup 0= if cr ." Empty." cr abort then dup >r 1- over ! r> 1+ cells + @ ; 
-: get ( -- x ) stk dup @ dup >r 0= if cr ." Empty." cr abort then 0 1 -  over +! r> 1+ cells + @ ;
-: top stk dup @ 1+ cells + @ ;
-: bot stk 2 cells + @ ;
-: pic ( n -- x ) 2+ cells stk + @  ;
-: stk.remaining stk 2@ - ;
-: look stk dup 2 cells + swap @ 0 ?do dup >r @ r> cell + loop drop ;
-: cnt stk @ ;
-: swp stk dup @ cells + dup 2@ swap rot 2! ;
-: rots ['] get 3 times rot ['] put 3 times ;
-: -rots ['] get 3 times -rot ['] put 3 times ;
-: stk.prev stk dup @ 0<> if cr ." No more stacks." cr abort then dp ! ,pop to stk ;
-: :stk stk , stk.new ;
-
-\ The ] square bracket is a substitute for the > sign.
-\ ] is easier since it is unshifted.
-: ]pada pad ! ;
-: ]padb pad cell + ! ;
-: ]padc pad 2 cells + ! ;
-: ]padd pad 3 cells + ! ;
-: pada] pad @ ;
-: padb] pad cell + @ ;
-: padc] pad 2 cells + @ ;
-: padd] pad 3 cells + @ ;
+include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 
 : reset s" _reset" evaluate s" marker _reset" evaluate ;
 : 0reset 0sp reset ;
