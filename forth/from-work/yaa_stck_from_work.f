@@ -37,10 +37,11 @@ variable stk 0 stk !
 : get ( -- x ) stk @ dup @ dup >r 0= if cr ." Empty." cr abort then 0 1 -  over +! r> 1+ cells + @ ;
 : top stk @ dup @ 1+ cells + @ ;
 : bot stk @ 2 cells + @ ;
-: pic ( n -- x ) stk @ dup @ rot - 1+ cells + @ ; 
+\ : pic ( n -- x ) stk @ dup @ rot - 1+ cells + @ ; 
 
-: qq dup stk @ dup >r 2@ >r 0 swap between 0= 
-        if ." bad" abort then r> r> rot - 1+ cells + @ ;
+: pic ( n--x ) stk @ dup @ ( n sid cnt) rot ( sid cnt n ) dup >r 1+ over 0
+        swap between 0= if cr ." Invalid index." cr abort then 
+        r> ( sid cnt n ) - 1+ cells + @ ;
 
 : stk.remaining stk @ 2@ - ;
 : look stk @ dup 0= if drop cr ." No stacks." cr abort then 
