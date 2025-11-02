@@ -1,17 +1,19 @@
 marker mystuff
 
+variable dcnt 0 dcnt !
 : allot- cells negate allot ;
 \ : ,pop here [ 1 cells literal ] - @ [ 0 1 cells - literal ] dp +! ( allot ) ;
 \ : ,pop 0 cell - dp +! dp @ @ ;
-: ,pop 0 cell - dp dup -rot +! @ @ ;
-: ,npush 0 do , loop ;
+: ,psh , cell dcnt +! ;
+: ,pop 0 cell - dup >r dp dup -rot +! @ @ r> dcnt +! ;
+: ,npsh 0 do ,psh loop ;
 : ,npop 0 do ,pop loop ;
 \ : ,pick 1+ cells negate here + @ ;
 : ,pic 1+ cells dp @ swap - @ ;
 : ,npic cells here dup rot - ?do i @ cell +loop ;
 : ,peek dp @ cell - @ ;
-: ,drop 0 cell - dp +! ; \ dictionary drop
-: ,ndrop cells negate allot ;
+: ,drop 0 cell - dup dp +! dcnt +! ; \ dictionary drop
+: ,ndrop 0 ?do ,drop loop ;
 : ,swap ,pop ,pop swap , , ;
 : ,rot ,pop ,pop ,pop rot , , , ;
 : ,-rot ,pop ,pop ,pop -rot , , , ;
