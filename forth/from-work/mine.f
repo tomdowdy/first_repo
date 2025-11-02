@@ -6,10 +6,10 @@ marker mystuff
 : ,pop 0 cell - dp dup -rot +! @ @ ;
 : ,npush 0 do , loop ;
 : ,npop 0 do ,pop loop ;
-: ,peek dp @ cell - @ ;
-: ,peekn cells here dup rot - ?do i @ cell +loop ;
 \ : ,pick 1+ cells negate here + @ ;
-: ,pick 1+ cells dp @ swap - @ ;
+: ,pic 1+ cells dp @ swap - @ ;
+: ,npic cells here dup rot - ?do i @ cell +loop ;
+: ,peek dp @ cell - @ ;
 : ,drop 0 cell - dp +! ; \ dictionary drop
 : ,ndrop cells negate allot ;
 : ,swap ,pop ,pop swap , , ;
