@@ -50,10 +50,11 @@ variable stk 0 stk !
 : swp stk @ dup @ cells + dup 2@ swap rot 2! ;
 : rots ['] get 3 times rot ['] put 3 times ;
 : -rots ['] get 3 times -rot ['] put 3 times ;
-: stk.prev stk @ dup cell - @ dup 0= if 0 stk ! cr ." No stacks." cr abort then stk ! dp ! ;
+: stk.prev stk @ 0= if cr ." No stacks." cr abort then
+        stk @ cell - dup @ stk ! dp ! ; 
 : :stk stk @ , stk.new ;
 
-: a-l ( addr -- x ) cell - @ ; \ a-l = addr - cell look
+: -a ( addr -- x ) cell - @ ; \ -a = addr - cell look
 
 \ BELOW IS ONLY FOR DEVELOPMENT
 \ hex
