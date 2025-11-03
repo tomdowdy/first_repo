@@ -61,7 +61,7 @@ variable stk 0 stk !
 : stks.lst stk @ 0= if cr ." No stacks." cr abort then 
         0 >r stk @ begin r> 1+ >r dup cell - @ dup 0= until drop    r> ; \ list stacks
 
-: stks.cnt stks.list dup >r ndrop r> ; \ count stacks
+: stks.cnt stks.lst dup >r ndrop r> ; \ count stacks
 
 : -a ( addr -- x ) cell - @ ; \ -a = addr - cell look
 
