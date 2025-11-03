@@ -1,5 +1,9 @@
 marker mystuff
 
+: ,p here cell - dup dp ! @ ; \ used in conjunction with 
+	\ ,. Does not impact dcnt variable like ,psh does.
+	\ quick and dirty TOS save.
+
 variable dcnt 0 dcnt !
 : allot- cells negate allot ;
 \ : ,pop here [ 1 cells literal ] - @ [ 0 1 cells - literal ] dp +! ( allot ) ;
@@ -85,8 +89,11 @@ include C:\GitHub\first_repo\forth\from-work\yaa_stck_from_work.f
 
 include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 
-: reset s" _reset" evaluate s" marker _reset" evaluate ;
-: 0reset 0sp reset ;
+: reset 
+	0sp 
+	0 dcnt !
+	0 stk !
+	s" _reset" evaluate s" marker _reset" evaluate ;
 : mrk s" marker mrk" evaluate ;
 marker _reset
 
