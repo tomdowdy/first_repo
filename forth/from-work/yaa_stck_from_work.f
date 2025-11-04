@@ -50,11 +50,13 @@ variable stk 0 stk !
                 dup 2 cells + swap @ 0 ?do dup >r @ r> cell + loop drop ;
         : cnt stk @ @ ;
         : swp stk @ dup @ cells + dup 2@ swap rot 2! ;
-        : rots ['] get 3 times rot ['] put 3 times ;
-        : -rots ['] get 3 times -rot ['] put 3 times ;
+        : rots get get get -rot put put put ;
+        : -rots get get get rot put put put ;
         : stk.prev stk @ 0= 
                 if cr ." No stacks." cr abort else 
                 stk @ cell - dup @ stk ! dp ! then ; 
+        : stk.init stk @ 2 cells + dup cell - @ 1+ cells over + 
+                cell + swap ?do 0 i ! loop ;
 
 : :stk stk @ , stk.new ;
 
