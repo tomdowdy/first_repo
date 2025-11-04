@@ -85,7 +85,7 @@ $ 68 ' #cols >body ! ( change width of words output )
 
 hex
  
-include C:\GitHub\first_repo\forth\from-work\_yaa_stck_from_work.f
+include C:\GitHub\first_repo\forth\from-home\yaa_stck_from_work.f
 
 include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 
