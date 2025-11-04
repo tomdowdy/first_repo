@@ -1,4 +1,5 @@
-marker mystuff
+
+: beginning-of-mine ( marks the beginning of my words ) ;
 
 : ,p here cell - dup dp ! @ ; \ used in conjunction with 
 	\ ,. Does not impact dcnt variable like ,psh does.
