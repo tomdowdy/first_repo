@@ -83,6 +83,9 @@ $ 68 ' #cols >body ! ( change width of words output )
 : dw dmpw ;
 : dx dmpxt ;
 : wl words.like ;
+: find-mymarker here here 2000 cells - do i dup dup @ = 
+	if cr ." found" cr unloop exit then drop loop ;
+: my-marker here , ;
 
 hex
  

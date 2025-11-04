@@ -18,3 +18,5 @@ create tmp 4 cells allot
 : tmpb tmp cell + @ ;
 : tmpc tmp 2 cells + @ ;
 : tmpd tmp 3 cells + @ ;
+:noname tmp 4 cells + tmp do 0 i ! cell +loop ;
+dup execute >code dp !
