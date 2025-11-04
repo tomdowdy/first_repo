@@ -26,13 +26,15 @@
 \ sees that 0
 
 variable stk 0 stk !
-: stk.noname ( n -- sid ) here 0 , over , swap 2+ cells allot ;
+: stk.init stk @ 2 cells + stk @ cell + @ cells over + 
+        swap ?do 0 i ! cell +loop ;
+: stk.noname ( n -- sid ) here 0 , over , swap cells allot ;
         : psh ( x sid -- ) dup 2@ dup >r = if cr ." Full." cr abort then 
                 1 over +! ( n sid ) r> 2+ cells + ! ;
         : pop ( sid -- x ) dup @ dup >r 0= if cr ." Empty." cr abort then 
                 0 1 -  over +! r> 1+ cells + @ ;
 
-: stk.new ( n -- ) stk.noname stk ! ;
+: stk.new ( n -- ) stk.noname stk ! stk.init ;
         \ : put ( x -- ) stk dup 2@ = if cr ." Full." cr abort then dup @ 1+ dup >r ( n sid nxt ) over ! r> 1+ cells + ! ;
         : put ( x -- ) stk @ dup 2@ dup >r = if cr ." Full." cr abort then 1 over +! ( n sid ) r> 2+ cells + ! ;
         \ : get ( -- x ) stk dup @ dup 0= if cr ." Empty." cr abort then dup >r 1- over ! r> 1+ cells + @ ; 
@@ -55,9 +57,7 @@ variable stk 0 stk !
         : stk.prev stk @ 0= 
                 if cr ." No stacks." cr abort else 
                 stk @ cell - dup @ stk ! dp ! then ; 
-        : stk.init stk @ 2 cells + dup cell - @ 1+ cells over + 
-                cell + swap ?do 0 i ! loop ;
-
+ 
 : :stk stk @ , stk.new ;
 
 : stks.lst stk @ 0= if cr ." No stacks." cr abort then 
