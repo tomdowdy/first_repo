@@ -7,16 +7,11 @@
 \ : ,pop here cell - dup @ swap dp ! ;
  \ ABOVE IS ONLY FOR DEVELOPMENT
  
-: times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
-: tims ( n <name> -- * ) bl word find 0= if drop exit then swap times ;
-: cs 0sp ;
-: cp 0sp page ;
-
 \ Stack map
 \    |    count    |    max   |   n cells   |
 
 \ stk.new creates a new stack reserving memory
-\ puts stack ID (sid) in stk value
+\ puts stack ID (sid) in stk variable
 \ :stk does same but first pushes value from stk into dictionary
 \ ie also know as compliling the value of stk
 \ this lets you do stk.prev that will restore the stack
@@ -26,8 +21,10 @@
 \ sees that 0
 
 variable stk 0 stk !
+
 : stk.init stk @ 2 cells + stk @ cell + @ cells over + 
         swap ?do 0 i ! cell +loop ;
+        \ initializes stack items to 0
 : stk.noname ( n -- sid ) here 0 , over , swap cells allot ;
         : psh ( x sid -- ) dup 2@ dup >r = if cr ." Full." cr abort then 
                 1 over +! ( n sid ) r> 2+ cells + ! ;
@@ -61,11 +58,9 @@ variable stk 0 stk !
 : :stk stk @ , stk.new ;
 
 : stks.lst stk @ 0= if cr ." No stacks." cr abort then 
-        0 >r stk @ begin r> 1+ >r dup cell - @ dup 0= until drop    r> ; \ list stacks
+        0 >r stk @ begin r> 1+ >r dup cell - @ dup 0= until drop    r> ; \ list stack sid's in stack que
 
-: stks.cnt stks.lst dup >r ndrop r> ; \ count stacks
-
-: -a ( addr -- x ) cell - @ ; \ -a = addr - cell look
+: stks.cnt stks.lst dup >r ndrop r> ; \ count stacks in stack que
 
 \ BELOW IS ONLY FOR DEVELOPMENT
 \ hex

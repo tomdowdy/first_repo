@@ -1,12 +1,30 @@
 
 : beginning-of-mine ( marks the beginning of my words ) ;
 
-: ,p here cell - dup dp ! @ ; \ used in conjunction with 
-	\ ,. Does not impact dcnt variable like ,psh does.
+\ cell prior to here functions
+: hd here cell - ; \ hd=address of cell before here
+: hd.inc here cell - dup @ 1 + dup >r swap ! r> ;
+	\ leaves new value on stack
+: hd.dec here cell - dup @ 1 - dup >r swap ! r> ;
+	\ leaves new value on stack
+: hd0 ( -- flag ) hd.dec 0= ; \ count down
+: hdn ( n -- flag ) hd.inc = ; \ count up
+
+: ,p here cell - dup dp ! @ ; 
+	\ pops item at cell before here onto stack
+	\ and adjusts here
+	\ used in conjunction with , word.
+	\ Does not impact dcnt variable like ,psh and ,pop do.
 	\ quick and dirty TOS save.
+: -a ( addr -- x ) cell - @ ; \ -a = addr - cell look
+	\ like hd but for an address on the stack
+: times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
+: tims ( n <name> -- * ) bl word find 0= if drop exit then swap times ;
+: cs 0sp ;
+: cp 0sp page ;
 
 variable dcnt 0 dcnt !
-: allot- cells negate allot ;
+: allot- ( n -- ) cells 0 swap - allot ;
 \ : ,pop here [ 1 cells literal ] - @ [ 0 1 cells - literal ] dp +! ( allot ) ;
 \ : ,pop 0 cell - dp +! dp @ @ ;
 : ,psh , 1 dcnt +! ;
@@ -22,6 +40,7 @@ variable dcnt 0 dcnt !
 : ,swap ,pop ,pop swap , , ;
 : ,rot ,pop ,pop ,pop rot , , , ;
 : ,-rot ,pop ,pop ,pop -rot , , , ;
+: ,cnt dcnt @ ;
 : ndrop 0 do drop loop ; \ stack multiple drop.
 : ntuck ( s*j x n -- q*j x n*j ) dup depth 3 - > if cr ." Will cause stack underflow." cr throw exit then swap >r dup >r 0 ?do , loop r> r> swap 0 ?do ,pop loop ;
 : >bos depth 1 - ntuck ;
@@ -83,6 +102,12 @@ $ 68 ' #cols >body ! ( change width of words output )
 : dw dmpw ;
 : dx dmpxt ;
 : wl words.like ;
+
+\ use my-marker to mark a spot by storing the address
+\ of the location at that location 
+\ then do find-mymarker to find it again
+\ method relies on the slim change that a memory location
+\ will hold its address.
 : find-mymarker here here 2000 cells - do i dup dup @ = 
 	if cr ." found" cr unloop exit then drop loop ;
 : my-marker here , ;
@@ -92,6 +117,38 @@ hex
 include C:\GitHub\first_repo\forth\from-work\yaa_stck_from_work.f
 
 include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
+
+\ quick and dirty dump ddmp
+: ddmp ( addr -- )
+	base @ >r hex
+	tmp.bac
+	\ tmpa=cell count tmpb=line count
+	0 ]tmpa 0 ]tmpb
+	\ tmpc=start-addr tmpd=end-addr
+	dup ]tmpc 4 cells f * + ]tmpd
+	cr cr
+	begin
+		tmpb 0= if
+			tmpc dup 0 <# # # # # # # # #s #> type ."  |"
+			c@ 0 <# # #s #> type
+		else
+			tmpc c@ 0 <# # #s #> type
+		then
+		4 tmpa.cnt if
+			." |"
+			0 ]tmpa
+		else
+			space
+		then
+		10 tmpb.cnt if
+		cr 0 ]tmpa 0 ]tmpb
+		then
+		tmpd tmpc.cnt 
+	until
+	tmp.rstr
+	cr 
+	r> base !
+;
 
 : reset 
 	0sp 

@@ -9,3 +9,8 @@ https://github.com/hcchengithub/peforth.git
 peforth a python based forth
 
 
+the quickest and dirtiest memory dump ive made
+: qq cr dup 10 cells + swap do i dup c@ . 1+ 4 mod 0= if cr then loop ; 
+or
+: qq cr dup 10 cells + swap do i dup c@ 0 <# # #s #> type space 1+ 4 mod 0= if cr then loop ;
+
