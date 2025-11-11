@@ -20,6 +20,7 @@ create tmpa 100 allot
     \ an attempt to make an equivalent to pforth
     \ words.like
     \ uses code from gforth 'words'
+    \ the key is the 'search' function
 	
 	bl word count tmpa send-to tmpa count , ,
 	
