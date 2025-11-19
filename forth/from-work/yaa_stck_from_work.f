@@ -14,8 +14,8 @@
 \ puts stack ID (sid) in stk variable
 \ :stk does same but first pushes value from stk into dictionary
 \ ie also know as compliling the value of stk
-\ this lets you do stk.prev that will restore the stack
-\ active prior to the :stk command
+\ this lets you do stk.prev that will restore the previous stack
+\ active prior to the last :stk command
 \ since stk defaults to 0, 0 will be compiled on next :stk
 \ stk.prev will stop restoring previous stack when it
 \ sees that 0
@@ -55,7 +55,7 @@ variable stk 0 stk !
                 if cr ." No stacks." cr abort else 
                 stk @ cell - dup @ stk ! dp ! then ; 
  
-: :stk stk @ , stk.new ;
+: :stk ( n -- ) stk @ , stk.new ;
 
 : stks.lst stk @ 0= if cr ." No stacks." cr abort then 
         0 >r stk @ begin r> 1+ >r dup cell - @ dup 0= until drop    r> ; \ list stack sid's in stack que
