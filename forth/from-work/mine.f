@@ -1,5 +1,5 @@
 
-: beginning-of-mine ( marks the beginning of my words ) ;
+: beginning-of-mine.f ( marks the beginning of my words ) ;
 
 \ cell prior to here functions
 : hd here cell - ; \ hd=address of cell before here
@@ -81,15 +81,15 @@ variable dcnt 0 dcnt !
 	1 ,ndrop ( clean up dictionary ) 
 	r> r>
 	; 
-0 [if]
-: dmp $ 80
-	base @ >r 
-	hex
-	cr ." -Address- 00 01 02 03|04 05 06 07|08 09 0A 0B|0C 0D 0E 0F  ---chars---" cr
-	   ." ------------------------------------------------------------------------------"
-	dump
-	r> base ! ;
-[then]
+\ 0 [if]
+\ : dmp $ 80
+\ 	base @ >r 
+\ 	hex
+\ 	cr ." -Address- 00 01 02 03|04 05 06 07|08 09 0A 0B|0C 0D 0E 0F  ---chars---" cr
+\ 	   ." ------------------------------------------------------------------------------"
+\ 	dump
+\ 	r> base ! ;
+\ [then]
 
 include C:\GitHub\first_repo\forth\from-work\dmp.f
 
@@ -118,7 +118,7 @@ include C:\GitHub\first_repo\forth\from-work\yaa_stck_from_work.f
 
 include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 
-\ quick and dirty dump ddmp
+\ not that quick and dirty dump ddmp
 : ddmp ( addr -- )
 	base @ >r hex
 	tmp.bac

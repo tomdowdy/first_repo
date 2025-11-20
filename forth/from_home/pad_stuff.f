@@ -1,21 +1,24 @@
 \ marker pad-stuff
 
+\ 1 cells is used instead of cell since some forths dont have cell word
+
 : ]pada depth if pad ! then ;
-: ]padb depth if pad cell + ! then ;
+: ]padb depth if pad 1 cells + ! then ;
 : ]padc depth if pad 2 cells + ! then ;
 : ]padd depth if pad 3 cells + ! then ;
 : pada pad @ ;
-: padb pad cell + @ ;
+: padb pad 1 cells + @ ;
 : padc pad 2 cells + @ ;
 : padd pad 3 cells + @ ;
 
+\ ] is used instead of > since it is unshifted
 create tmp 4 cells allot
 : ]tmpa depth if tmp ! then ;
-: ]tmpb depth if tmp cell + ! then ;
+: ]tmpb depth if tmp 1 cells + ! then ;
 : ]tmpc depth if tmp 2 cells + ! then ;
 : ]tmpd depth if tmp 3 cells + ! then ;
 : tmpa tmp @ ;
-: tmpb tmp cell + @ ;
+: tmpb tmp 1 cellS + @ ;
 : tmpc tmp 2 cells + @ ;
 : tmpd tmp 3 cells + @ ;
 \ increment tmp and leave new value on stack
@@ -30,7 +33,7 @@ create tmp 4 cells allot
 : tmpd.cnt ( n -- flag ) tmpd.inc = ;
 : tmp.bac tmpa , tmpb , tmpc , tmpd , ;
 : tmp.rstr ,p ]tmpd ,p ]tmpc ,p ]tmpb ,p ]tmpa ;
-: tmp.dmp tmp dup 4 cells + swap do i @ cell +loop ;
-: tmp0 tmp dup 4 cells + swap do 0 i ! cell +loop ;   
+: tmp.dmp tmp dup 4 cells + swap do i @ 1 cells +loop ;
+: tmp0 tmp dup 4 cells + swap do 0 i ! 1 cells +loop ;   
 \ init tmps to 0
 tmp0
