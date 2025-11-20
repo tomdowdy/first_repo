@@ -27,8 +27,8 @@ variable dcnt 0 dcnt !
 : allot- ( n -- ) cells 0 swap - allot ;
 \ : ,pop here [ 1 cells literal ] - @ [ 0 1 cells - literal ] dp +! ( allot ) ;
 \ : ,pop 0 cell - dp +! dp @ @ ;
-: ,psh , 1 dcnt +! ;
-: ,pop 0 cell - dp dup -rot +! @ @ 0 1 - dcnt +! ;
+: ,psh depth if , 1 dcnt +! else cr ." Stack empty." cr abort then ;
+: ,pop dcnt @ if 0 cell - dp dup -rot +! @ @ 0 1 - dcnt +! else cr ." Dstack empty." cr abort then ;
 : ,npsh 0 do ,psh loop ;
 : ,npop 0 do ,pop loop ;
 \ : ,pick 1+ cells negate here + @ ;
@@ -108,9 +108,15 @@ $ 68 ' #cols >body ! ( change width of words output )
 \ then do find-mymarker to find it again
 \ method relies on the slim change that a memory location
 \ will hold its address.
-: find-mymarker here here 2000 cells - do i dup dup @ = 
-	if cr ." found" cr unloop exit then drop loop ;
-: my-marker here , ;
+
+: find.mrk here $ 200 cells - here 
+begin 
+	dup dup @ = if swap drop exit then [ 1 cells literal ] - 
+	2dup =
+until 2drop
+;
+: rstr.mrk find.mrk dp ! ;
+: mrk here , ;
 
 hex
  
@@ -155,7 +161,7 @@ include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 	0 dcnt !
 	0 stk !
 	s" _reset" evaluate s" marker _reset" evaluate ;
-: mrk s" marker mrk" evaluate ;
+: my-mrk s" marker my-mrk" evaluate ;
 marker _reset
 
 hex
