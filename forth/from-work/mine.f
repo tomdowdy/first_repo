@@ -163,6 +163,15 @@ include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 	s" _reset" evaluate s" marker _reset" evaluate ;
 : my-mrk s" marker my-mrk" evaluate ;
 marker _reset
-
+variable buf
+here 128 cells + buf ! \ buffer area above here
+: bufa buf @ ;
+: bufb buf 1 cells + @ ;
+: bufc buf 2 cells + @ ;
+: bufd buf 3 cells + @ ;
+: ]bufa buf ! ;
+: ]bufb buf 1 cells + ! ;
+: ]bufc buf 2 cells + ! ;
+: ]bufd buf 3 cells + ! ;
 hex
 
