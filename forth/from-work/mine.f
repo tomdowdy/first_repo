@@ -164,7 +164,7 @@ include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 : my-mrk s" marker my-mrk" evaluate ;
 marker _reset
 variable buf
-here 128 cells + buf ! \ buffer area above here
+here 256 cells + buf ! \ buffer area above here
 : bufa buf @ ;
 : bufb buf 1 cells + @ ;
 : bufc buf 2 cells + @ ;
