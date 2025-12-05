@@ -169,9 +169,9 @@ here 256 cells + buf ! \ buffer area above here
 : bufb buf 1 cells + @ ;
 : bufc buf 2 cells + @ ;
 : bufd buf 3 cells + @ ;
-: ]bufa buf ! ;
-: ]bufb buf 1 cells + ! ;
-: ]bufc buf 2 cells + ! ;
-: ]bufd buf 3 cells + ! ;
+: ibufa buf ! ;
+: ibufb buf 1 cells + ! ;
+: ibufc buf 2 cells + ! ;
+: ibufd buf 3 cells + ! ;
 hex
 
