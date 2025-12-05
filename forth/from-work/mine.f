@@ -129,9 +129,9 @@ include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 	base @ >r hex
 	tmp.bac
 	\ tmpa=cell count tmpb=line count
-	0 ]tmpa 0 ]tmpb
+	0 itmpa 0 itmpb
 	\ tmpc=start-addr tmpd=end-addr
-	dup ]tmpc 4 cells f * + ]tmpd
+	dup itmpc 4 cells f * + itmpd
 	cr cr
 	begin
 		tmpb 0= if
@@ -142,12 +142,12 @@ include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 		then
 		4 tmpa.cnt if
 			." |"
-			0 ]tmpa
+			0 itmpa
 		else
 			space
 		then
 		10 tmpb.cnt if
-		cr 0 ]tmpa 0 ]tmpb
+		cr 0 itmpa 0 itmpb
 		then
 		tmpd tmpc.cnt 
 	until
