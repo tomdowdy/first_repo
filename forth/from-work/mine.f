@@ -1,5 +1,6 @@
 
-: beginning-of-mine.f ( marks the beginning of my words ) ;
+: beginning-of-mine.f ( marks the beginning of my words ) 
+	[ here literal ] ;
 
 \ cell prior to here functions
 : hd here cell - ; \ hd=address of cell before here
@@ -161,17 +162,20 @@ include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 	0 dcnt !
 	0 stk !
 	s" _reset" evaluate s" marker _reset" evaluate ;
-: my-mrk s" marker my-mrk" evaluate ;
-marker _reset
 variable buf
-here 256 cells + buf ! \ buffer area above here
-: bufa buf @ ;
-: bufb buf 1 cells + @ ;
-: bufc buf 2 cells + @ ;
-: bufd buf 3 cells + @ ;
-: ibufa buf ! ;
-: ibufb buf 1 cells + ! ;
-: ibufc buf 2 cells + ! ;
-: ibufd buf 3 cells + ! ;
+	here 256 cells + buf ! \ buffer area above here
+	: bufa buf @ ;
+	: bufb buf 1 cells + @ ;
+	: bufc buf 2 cells + @ ;
+	: bufd buf 3 cells + @ ;
+	: ibufa buf ! ;
+	: ibufb buf 1 cells + ! ;
+	: ibufc buf 2 cells + ! ;
+	: ibufd buf 3 cells + ! ; 
+	: gbuf ( n -- x ) cells buf @ + @ ;
+	: pbuf ( x n -- ) cells buf @ + ! ;
+my-mrk s" marker my-mrk" evaluate ;
+\marker _reset
+
 hex
 
