@@ -162,9 +162,11 @@ include C:\GitHub\first_repo\forth\from_home\pad_stuff.f
 	0 dcnt !
 	0 stk !
 	s" _reset" evaluate s" marker _reset" evaluate ;
-: my-mrk s" marker my-mrk" evaluate ;
+
 variable buf
-	here 256 cells + buf ! \ buffer area above here
+	here base @ >r hex
+		100 cells + buf ! 
+		r> base !            \ buffer area above here
 	: bufa buf @ ;
 	: bufb buf 1 cells + @ ;
 	: bufc buf 2 cells + @ ;
@@ -172,10 +174,11 @@ variable buf
 	: ibufa buf ! ;
 	: ibufb buf 1 cells + ! ;
 	: ibufc buf 2 cells + ! ;
-	: ibufd buf 3 cells + ! ;
-	: pbuf ( x n -- ) cells buf @ + ! ; \ put buf
-	: gbuf ( n -- x ) cells buf @ + @ ; \ get buf
-variable initial.here
+	: ibufd buf 3 cells + ! ; 
+	: gbuf ( n -- x ) cells buf @ + @ ;
+	: pbuf ( x n -- ) cells buf @ + ! ;
+: my-mrk s" marker my-mrk" evaluate ;
 marker _reset
+
 hex
-here initial.here !
+
