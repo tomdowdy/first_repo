@@ -3,22 +3,19 @@
 	[ here literal ] ;
 
 \ cell prior to here functions
-: hd here cell - ; \ hd=address of cell before here
-: hd.inc here cell - dup @ 1 + dup >r swap ! r> ;
-	\ leaves new value on stack
-: hd.dec here cell - dup @ 1 - dup >r swap ! r> ;
-	\ leaves new value on stack
-: hd0 ( -- flag ) hd.dec 0= ; \ count down
-: hdn ( n -- flag ) hd.inc = ; \ count up
+	: hd here cell - ; \ hd=address of cell before here
+	: hd.inc here cell - dup @ 1 + dup >r swap ! r> ; \ leaves new value on stack
+	: hd.dec here cell - dup @ 1 - dup >r swap ! r> ; \ leaves new value on stack
+	: hd0 ( -- flag ) hd.dec 0= ; \ count down
+	: hdn ( n -- flag ) hd.inc = ; \ count up
 
-: ,p here cell - dup dp ! @ ; 
-	\ pops item at cell before here onto stack
-	\ and adjusts here
-	\ used in conjunction with , word.
-	\ Does not impact dcnt variable like ,psh and ,pop do.
-	\ quick and dirty TOS save.
-: -a ( addr -- x ) cell - @ ; \ -a = addr - cell look
-	\ like hd but for an address on the stack
+\ pops item at cell before here onto stack
+\ and adjusts here
+\ used in conjunction with , word.
+\ Does not impact dcnt variable like ,psh and ,pop do.
+\ quick and dirty TOS save.
+	: ,p here cell - dup dp ! @ ; 
+: a- ( addr -- x ) cell - @ ; \ a- = addr - cell look, like hd but for an address on the stack
 : times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
 : tims ( n <name> -- * ) bl word find 0= if drop exit then swap times ;
 : cs 0sp ;
@@ -48,8 +45,8 @@ variable dcnt 0 dcnt !
 : ## base @ >r decimal 0 0 bl word count >number 2drop d>s r> base ! ; \ decimal prefix
 : +to postpone +-> ;
 : -to negate postpone +-> ;
-: narray ( n*items n <name> -- ) create dup 0 do dup i - pick , loop 0 do drop loop does> swap cells + @ ; ( create array of n items named name, to access item m do: m name )
-: naddr ( idx <narray name> -- addr ) ' >code 3 cells + swap cells + ; ( idx is the index of the item in the narray )
+: narray ( n*items n <name> -- ) create dup 0 do dup i - pick , loop 0 do drop loop does> swap cells + @ ; \ create array of n items named name, to access item m do: m name
+: naddr ( idx <narray name> -- addr ) ' >code 3 cells + swap cells + ; \ idx is the index of the item in the narray
 : mycfa postpone [ here postpone literal ] ; immediate
 : myxt postpone [ here code> postpone literal ] ; immediate
 : $tolower >r r@ c@ r@ count 0 do dup c@ tolower over c! 1 + loop drop r> drop ;
@@ -81,7 +78,8 @@ variable dcnt 0 dcnt !
 	4 ndrop ( clean up stack )
 	1 ,ndrop ( clean up dictionary ) 
 	r> r>
-	; 
+; 
+
 \ 0 [if]
 \ : dmp $ 80
 \ 	base @ >r 
@@ -104,17 +102,17 @@ $ 68 ' #cols >body ! ( change width of words output )
 : dx dmpxt ;
 : wl words.like ;
 
-\ use my-marker to mark a spot by storing the address
+\ use mrk to mark a spot by storing the address
 \ of the location at that location 
 \ then do find-mymarker to find it again
 \ method relies on the slim change that a memory location
 \ will hold its address.
 
 : find.mrk here $ 200 cells - here 
-begin 
-	dup dup @ = if swap drop exit then [ 1 cells literal ] - 
-	2dup =
-until 2drop
+	begin 
+		dup dup @ = if swap drop exit then [ 1 cells literal ] - 
+		2dup =
+	until 2drop
 ;
 : rstr.mrk find.mrk dp ! ;
 : mrk here , ;
@@ -123,39 +121,39 @@ hex
 
 include C:\GitHub\first_repo\forth\from-work\yaa_stck_from_work.f
 
-\ include C:\GitHub\first_repo\forth\from-work\pad_stuff.f
+include C:\GitHub\first_repo\forth\from-work\pad_stuff.f
 
 \ not that quick and dirty dump ddmp
-: ddmp ( addr -- )
-	base @ >r hex
-	tmp.bac
-	\ tmpa=cell count tmpb=line count
-	0 itmpa 0 itmpb
-	\ tmpc=start-addr tmpd=end-addr
-	dup itmpc 4 cells f * + itmpd
-	cr cr
-	begin
-		tmpb 0= if
-			tmpc dup 0 <# # # # # # # # #s #> type ."  |"
-			c@ 0 <# # #s #> type
-		else
-			tmpc c@ 0 <# # #s #> type
-		then
-		4 tmpa.cnt if
-			." |"
-			0 itmpa
-		else
-			space
-		then
-		10 tmpb.cnt if
-		cr 0 itmpa 0 itmpb
-		then
-		tmpd tmpc.cnt 
-	until
-	tmp.rstr
-	cr 
-	r> base !
-;
+\ : ddmp ( addr -- )
+\	base @ >r hex
+\ 	tmp.bac
+\	\ tmpa=cell count tmpb=line count
+\	0 itmpa 0 itmpb
+\	\ tmpc=start-addr tmpd=end-addr
+\	dup itmpc 4 cells f * + itmpd
+\	cr cr
+\	begin
+\		tmpb 0= if
+\			tmpc dup 0 <# # # # # # # # #s #> type ."  |"
+\			c@ 0 <# # #s #> type
+\		else
+\			tmpc c@ 0 <# # #s #> type
+\		then
+\		4 tmpa.cnt if
+\			." |"
+\			0 itmpa
+\		else
+\			space
+\		then
+\		10 tmpb.cnt if
+\		cr 0 itmpa 0 itmpb
+\		then
+\		tmpd tmpc.cnt 
+\	until
+\	tmp.rstr
+\	cr 
+\	r> base !
+\ ;
 
 : reset 
 	0sp 
@@ -164,9 +162,8 @@ include C:\GitHub\first_repo\forth\from-work\yaa_stck_from_work.f
 	s" _reset" evaluate s" marker _reset" evaluate ;
 
 variable buf
-	here base @ >r hex
-		100 cells + buf ! 
-		r> base !            \ buffer area above here
+	\ researve buffer area above here
+	here base @ , hex 100 cells + buf ! ,p base !            
 	: bufa buf @ ;
 	: bufb buf 1 cells + @ ;
 	: bufc buf 2 cells + @ ;
