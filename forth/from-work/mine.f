@@ -15,6 +15,7 @@
 \ Does not impact dcnt variable like ,psh and ,pop do.
 \ quick and dirty TOS save.
 	: ,p here cell - dup dp ! @ ; 
+
 : a- ( addr -- x ) cell - @ ; \ a- = addr - cell look, like hd but for an address on the stack
 : times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
 : tims ( n <name> -- * ) bl word find 0= if drop exit then swap times ;
@@ -23,13 +24,10 @@
 
 variable dcnt 0 dcnt !
 : allot- ( n -- ) cells 0 swap - allot ;
-\ : ,pop here [ 1 cells literal ] - @ [ 0 1 cells - literal ] dp +! ( allot ) ;
-\ : ,pop 0 cell - dp +! dp @ @ ;
 : ,psh depth if , 1 dcnt +! else cr ." Stack empty." cr abort then ;
 : ,pop dcnt @ if 0 cell - dp dup -rot +! @ @ 0 1 - dcnt +! else cr ." Dstack empty." cr abort then ;
 : ,npsh 0 do ,psh loop ;
 : ,npop 0 do ,pop loop ;
-\ : ,pick 1+ cells negate here + @ ;
 : ,pic 1+ cells dp @ swap - @ ;
 : ,npic cells here dup rot - ?do i @ cell +loop ;
 : ,peek dp @ cell - @ ;
@@ -40,12 +38,20 @@ variable dcnt 0 dcnt !
 : ,-rot ,pop ,pop ,pop -rot , , , ;
 : ,cnt dcnt @ ;
 : ndrop 0 do drop loop ; \ stack multiple drop.
-: ntuck ( s*j x n -- q*j x n*j ) dup depth 3 - > if cr ." Will cause stack underflow." cr throw exit then swap >r dup >r 0 ?do , loop r> r> swap 0 ?do ,pop loop ;
+: ntuck ( s*j x n -- q*j x n*j ) 
+	dup depth 3 - > 
+	if 
+		cr ." Will cause stack underflow." cr throw exit 
+	then 
+	swap >r dup >r 0 ?do , loop r> r> swap 0 ?do ,pop loop ;
 : >bos depth 1 - ntuck ;
 : ## base @ >r decimal 0 0 bl word count >number 2drop d>s r> base ! ; \ decimal prefix
 : +to postpone +-> ;
 : -to negate postpone +-> ;
-: narray ( n*items n <name> -- ) create dup 0 do dup i - pick , loop 0 do drop loop does> swap cells + @ ; \ create array of n items named name, to access item m do: m name
+: narray ( n*items n <name> -- ) 
+	create dup 0 do dup i - pick , loop 
+	0 do drop loop 
+	does> swap cells + @ ; \ create array of n items named name, to access item m do: m name
 : naddr ( idx <narray name> -- addr ) ' >code 3 cells + swap cells + ; \ idx is the index of the item in the narray
 : mycfa postpone [ here postpone literal ] ; immediate
 : myxt postpone [ here code> postpone literal ] ; immediate

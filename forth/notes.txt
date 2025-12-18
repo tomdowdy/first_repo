@@ -12,3 +12,5 @@ peforth a python based forth
 https://comp.lang.forth.narkive.com/jj1Girc8/ann-dx-forth-4-57
 https://sourceforge.net/projects/min3rd/
 
+*****interesting forth info https://wiki.xxiivv.com/site/forth.html *************************************
+https://www.ultratechnology.com/chips.htm

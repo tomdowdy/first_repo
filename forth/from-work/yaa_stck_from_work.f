@@ -25,12 +25,14 @@ variable stk 0 stk !
 : stk.init stk @ 2 cells + stk @ cell + @ cells over + 
         swap ?do 0 i ! cell +loop ;
         \ initializes stack items to 0
+\ psh and pop need the sid
 : stk.noname ( n -- sid ) here 0 , over , swap cells allot ;
         : psh ( x sid -- ) dup 2@ dup >r = if cr ." Full." cr abort then 
                 1 over +! ( n sid ) r> 2+ cells + ! ;
         : pop ( sid -- x ) dup @ dup >r 0= if cr ." Empty." cr abort then 
                 0 1 -  over +! r> 1+ cells + @ ;
 
+\ put and get don't need sid
 : stk.new ( n -- ) stk.noname stk ! stk.init ;
         \ : put ( x -- ) stk dup 2@ = if cr ." Full." cr abort then dup @ 1+ dup >r ( n sid nxt ) over ! r> 1+ cells + ! ;
         : put ( x -- ) stk @ dup 2@ dup >r = if cr ." Full." cr abort then 1 over +! ( n sid ) r> 2+ cells + ! ;
@@ -55,7 +57,7 @@ variable stk 0 stk !
                 if cr ." No stacks." cr abort else 
                 stk @ cell - dup @ stk ! dp ! then ; 
  
-: :stk ( n -- ) stk @ , stk.new ;
+: :stk ( n -- ) stk @ , stk.new ; \ n cells
 
 : stks.lst stk @ 0= if cr ." No stacks." cr abort then 
         0 >r stk @ begin r> 1+ >r dup cell - @ dup 0= until drop    r> ; \ list stack sid's in stack que
