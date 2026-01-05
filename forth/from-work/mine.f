@@ -1,6 +1,5 @@
 
-: beginning-of-mine.f ( marks the beginning of my words ) 
-	[ here literal ] ;
+marker beginning-of-mine.f \ marks the beginning of my words
 
 \ cell prior to here functions
 	: hd here cell - ; \ hd=address of cell before here
@@ -168,8 +167,6 @@ include C:\GitHub\first_repo\forth\from-work\pad_stuff.f
 	s" _reset" evaluate s" marker _reset" evaluate ;
 
 variable buf
-	\ researve buffer area above here
-	here base @ , hex 100 cells + buf ! ,p base !            
 	: bufa buf @ ;
 	: bufb buf 1 cells + @ ;
 	: bufc buf 2 cells + @ ;
@@ -178,10 +175,23 @@ variable buf
 	: ibufb buf 1 cells + ! ;
 	: ibufc buf 2 cells + ! ;
 	: ibufd buf 3 cells + ! ; 
-	: gbuf ( n -- x ) cells buf @ + @ ;
-	: pbuf ( x n -- ) cells buf @ + ! ;
+	: buf> ( n -- x ) cells buf @ + @ ;
+	: >buf ( x n -- ) cells buf @ + ! ;
+\ use buf area as a stack
+	0 value _buf.stack
+	: buf.stack.init 0 _buf.stack ! ;
+	\ push buf
+		: pbuf ( x -- ) 
+			_buf.stack dup >r @ dup 1 + r@ ! 1 + cells r> + ! ;
+	\ get buf
+		: gbuf ( -- x ) 
+			_buf.stack dup >r @ 1 - dup r@ ! 1 + cells r> + @ ;
+	: buf.cnt _buf.stack @ ;
+	: buf.pick 1 + cells _buf.stack + @ ;
 : my-mrk s" marker my-mrk" evaluate ;
 marker _reset
+here base @ , hex 100 cells + buf ! ,p base !            
+buf @ 4 cells + to _buf.stack
 
 hex
 
