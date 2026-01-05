@@ -171,10 +171,10 @@ variable buf
 	: bufb buf 1 cells + @ ;
 	: bufc buf 2 cells + @ ;
 	: bufd buf 3 cells + @ ;
-	: ibufa buf ! ;
-	: ibufb buf 1 cells + ! ;
-	: ibufc buf 2 cells + ! ;
-	: ibufd buf 3 cells + ! ; 
+	: >bufa buf ! ;
+	: >bufb buf 1 cells + ! ;
+	: >bufc buf 2 cells + ! ;
+	: >bufd buf 3 cells + ! ; 
 	: buf> ( n -- x ) cells buf @ + @ ;
 	: >buf ( x n -- ) cells buf @ + ! ;
 \ use buf area as a stack
@@ -185,14 +185,12 @@ variable buf
 			_buf.stk.cnt 1 + dup >r cells buf + ! r> to _buf.stk.cnt ;
 	\ get buf
 		: gbuf ( -- x ) 
-			( _buf.stk.cnt dup >r @ 1 - dup r@ ! 1 + cells r> + @ ; )
 			_buf.stk.cnt dup >r cells buf + @ r> 1 - to _buf.stk.cnt ;
-	: buf.cnt _buf.stk.cnt @ ;
+	: buf.cnt _buf.stk.cnt ;
 	: buf.pick 1 + cells _buf.stk.cnt + @ ;
 : my-mrk s" marker my-mrk" evaluate ;
 marker _reset
 here base @ , hex 100 cells + buf ! ,p base !            
-buf @ 4 cells + to _buf.stk.cnt
 
 hex
 
