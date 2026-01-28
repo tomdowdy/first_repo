@@ -8,7 +8,9 @@
 ;
 : noname: noname-active 
 	if 
-		cr abort" Noname already active." cr
+		cr s" Noname already active." cr
+		reset-noname
+		abort
 	else 
 		here to noname-active 
 		:noname 
