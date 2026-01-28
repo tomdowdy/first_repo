@@ -191,7 +191,7 @@ variable buf
 : my-mrk s" marker my-mrk" evaluate ;
 marker _reset 
 \ buf is a memory area 100 cells (hex) above here
-here base @ , hex 100 cells + buf ! ,p base !            
+here base @ >r hex 100 cells + buf ! r> base !            
 
 hex
 
