@@ -4,13 +4,14 @@
 : reset-noname 
 		0 to compiling-noname
 		0 to active-noname
-		0 noname-active
+		0 to noname-active
 ;
 : noname: noname-active 
 	if 
-		cr abort" Noname already active." 
+		cr abort" Noname already active." cr
 	else 
-		here to noname-active :noname 
+		here to noname-active 
+		:noname 
 		1 to compiling-noname 
 	then 
 ;
@@ -20,8 +21,9 @@
 		dup to active-noname 
 		0 to compiling-noname
 	else
-		cr abort" Not compiling a noname."
+		cr s" Not compiling a noname." cr
 		reset-noname
+		abort
 	then
 ; immediate
 : noname- 
@@ -29,15 +31,17 @@
 		noname-active dp ! 
 		reset-noname
 	else 
-		cr abort" Noname not active." 
+		cr ." Noname not active." cr
 		reset-noname
+		abort
 	then 
 ;
 : noname active-noname execute ;
 : ; compiling-noname 
 	if 
-		cr abort" Compiling noname, use noname;." 
+		cr ." Compiling noname, use noname;." cr
 		reset-noname
+		abort
 	else 
 		postpone ; 
 	then 
