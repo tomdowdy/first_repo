@@ -13,19 +13,19 @@
 
 \ i is used instead of > since it is simpler
 create tmp 4 cells allot
-: itmpa depth if tmp ! then ;
-: itmpb depth if tmp 1 cells + ! then ;
-: itmpc depth if tmp 2 cells + ! then ;
-: itmpd depth if tmp 3 cells + ! then ;
+: >tmpa depth if tmp ! then ;
+: >tmpb depth if tmp 1 cells + ! then ;
+: >tmpc depth if tmp 2 cells + ! then ;
+: >tmpd depth if tmp 3 cells + ! then ;
 : tmpa tmp @ ;
 : tmpb tmp 1 cellS + @ ;
 : tmpc tmp 2 cells + @ ;
 : tmpd tmp 3 cells + @ ;
 \ increment tmp and leave new value on stack
-    : tmpa.inc tmpa 1+ dup itmpa ; 
-    : tmpb.inc tmpb 1+ dup itmpb ;
-    : tmpc.inc tmpc 1+ dup itmpc ;
-    : tmpd.inc tmpd 1+ dup itmpd ;
+    : tmpa.inc tmpa 1+ dup >tmpa ; 
+    : tmpb.inc tmpb 1+ dup >tmpb ;
+    : tmpc.inc tmpc 1+ dup >tmpc ;
+    : tmpd.inc tmpd 1+ dup >tmpd ;
 \ the following compares tmp variable to limit, increments value, and leaves a flag
     : tmpa.cnt ( n -- flag ) tmpa.inc = ;
     : tmpb.cnt ( n -- flag ) tmpb.inc = ;
@@ -33,7 +33,7 @@ create tmp 4 cells allot
     : tmpd.cnt ( n -- flag ) tmpd.inc = ;
 \ backup and restore tmp's
     : tmp.bac tmpa , tmpb , tmpc , tmpd , ;
-    : tmp.rstr ,p itmpd ,p itmpc ,p itmpb ,p itmpa ;
+    : tmp.rstr ,p >tmpd ,p >tmpc ,p >tmpb ,p >tmpa ;
 : tmp.dmp tmp dup 4 cells + swap do i @ 1 cells +loop ;
 : tmp0 tmp dup 4 cells + swap do 0 i ! 1 cells +loop ;   
 \ init tmps to 0
