@@ -1,6 +1,10 @@
 
 marker beginning-of-mine.f \ marks the beginning of my words
 
+hex create temp 10 cells allot
+
+: \\ postpone \ ; immediate
+
 \ cell prior to here functions
 	: hd here cell - ; \ hd=address of cell before here
 	: hd.inc here cell - dup @ 1 + dup >r swap ! r> ; \ leaves new value on stack
@@ -97,12 +101,12 @@ variable dcnt 0 dcnt !
 
 include C:\GitHub\first_repo\forth\from-work\dmp.f
 
-: dmpw ' >code dmp ; ( 'name' -- cfa mem dump )
-: dmpxt >code dmp ; ( xt --- cfa mem dump )
-: name. >name count type ; ( xt -- 'name' )
+: dmpw ' >code dmp ; \ 'name' -- cfa mem dump
+: dmpxt >code dmp ; \ xt --- cfa mem dump
+: name. >name count type ; \ xt -- 'name'
 : find. find 1 = cr if ." Immediate." else ." Not immediate." then cr ; 
 : .find bl word find. ;
-$ 68 ' #cols >body ! ( change width of words output )
+$ 68 ' #cols >body ! \ change width of 'words' output
 : dw dmpw ;
 : dx dmpxt ;
 : wl words.like ;
@@ -121,8 +125,6 @@ $ 68 ' #cols >body ! ( change width of words output )
 ;
 : rstr.mrk find.mrk dp ! ;
 : mrk here , ;
-
-hex
 
 include C:\GitHub\first_repo\forth\from-work\yaa_stck_from_work.f
 include C:\GitHub\first_repo\forth\from-work\pad_stuff.f
@@ -165,8 +167,7 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	0 dcnt !
 	0 stk !
 	s" _reset" evaluate s" marker _reset" evaluate ;
-
-variable buf
+0 value buf
 	: bufa buf @ ;
 	: bufb buf 1 cells + @ ;
 	: bufc buf 2 cells + @ ;
@@ -175,8 +176,9 @@ variable buf
 	: >bufb buf 1 cells + ! ;
 	: >bufc buf 2 cells + ! ;
 	: >bufd buf 3 cells + ! ; 
-	: buf> ( n -- x ) cells buf @ + @ ;
-	: >buf ( x n -- ) cells buf @ + ! ;
+	: buf> ( n -- x ) cells buf + @ ;
+	: >buf ( x n -- ) cells buf + ! ;
+	
 \ use buf area as a stack
 	0 value _buf.stk.cnt \ stack counter
 	: buf.stack.init 0 to _buf.stk.cnt ;
@@ -188,11 +190,13 @@ variable buf
 			_buf.stk.cnt dup >r cells buf + @ r> 1 - to _buf.stk.cnt ;
 	: buf.cnt _buf.stk.cnt ;
 	: buf.pick 1 + cells _buf.stk.cnt + @ ;
+	
 : my-mrk s" marker my-mrk" evaluate ;
+
 marker _reset 
 \ buf is a memory area 100 cells (hex) above here
-here base @ >r hex 100 cells + buf ! r> base !            
-cr ." Current here: " here
-cr ." buf address: " buf cr
+here 100 cells + to buf            
+cr cr ." Current here: " here .
+cr ." buf address: " buf . cr cr
 hex
 

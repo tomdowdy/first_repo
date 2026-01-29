@@ -5,7 +5,7 @@
 \ : ,drop here cell - dp ! ;
 \ : ,pic 1+ cells here swap - @ ;
 \ : ,pop here cell - dup @ swap dp ! ;
- \ ABOVE IS ONLY FOR DEVELOPMENT
+\                                  ABOVE IS ONLY FOR DEVELOPMENT
  
 \ Stack map
 \    |    count    |    max   |   n cells   |
@@ -64,7 +64,7 @@ variable stk 0 stk !
 
 : stks.cnt stks.lst dup >r ndrop r> ; \ count stacks in stack que
 
-\ BELOW IS ONLY FOR DEVELOPMENT
+\                          BELOW IS ONLY FOR DEVELOPMENT
 \ hex
 \ 22 stk.new
 \ Aa put bb put
