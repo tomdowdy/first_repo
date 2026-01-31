@@ -126,7 +126,7 @@ hex
 
 include C:\GitHub\first_repo\forth\from-work\yaa_stck_from_work.f
 include C:\GitHub\first_repo\forth\from-work\pad_stuff.f
-include C:\GitHub\first_repo\forth\from-work\easy-noname.f
+\ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 
 \ not that quick and dirty dump ddmp
 \ : ddmp ( addr -- )
