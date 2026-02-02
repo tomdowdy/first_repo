@@ -197,6 +197,6 @@ marker _reset
 \ buf is a memory area 100 cells (hex) above here
 here 100 cells + to buf            
 cr cr ." Current here: " here .
-cr ." buf address: " buf . cr cr
+cr ." 100 cells at buf address: " buf . cr cr
 hex
 
