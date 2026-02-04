@@ -28,7 +28,13 @@ hex create temp 10 cells allot
 variable dcnt 0 dcnt !
 : allot- ( n -- ) cells 0 swap - allot ;
 : ,psh depth if , 1 dcnt +! else cr ." Stack empty." cr abort then ;
-: ,pop dcnt @ if 0 cell - dp dup -rot +! @ @ 0 1 - dcnt +! else cr ." Dstack empty." cr abort then ;
+: ,pop dcnt @ 
+	if 
+		0 cell - dp dup -rot +! @ @ 0 1 - dcnt +! 
+	else 
+		cr ." Dstack empty." cr abort 
+	then 
+;
 : ,npsh 0 do ,psh loop ;
 : ,npop 0 do ,pop loop ;
 : ,pic 1+ cells dp @ swap - @ ;
@@ -193,9 +199,11 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	
 : my-mrk s" marker my-mrk" evaluate ;
 
+here to buf
+100 cells allot
+            
 marker _reset 
-\ buf is a memory area 100 cells (hex) above here
-here 100 cells + to buf            
+
 cr cr ." Current here: " here .
 cr ." 100 cells at buf address: " buf . cr cr
 hex
