@@ -11,8 +11,7 @@
 : padc pad 2 cells + @ ;
 : padd pad 3 cells + @ ;
 
-\ i is used instead of > since it is simpler
-create tmp 4 cells allot
+create tmp 10 cells allot
 : >tmpa depth if tmp ! then ;
 : >tmpb depth if tmp 1 cells + ! then ;
 : >tmpc depth if tmp 2 cells + ! then ;

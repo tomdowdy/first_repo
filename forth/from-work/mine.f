@@ -1,7 +1,7 @@
 
 marker beginning-of-mine.f \ marks the beginning of my words
 
-hex create tmp 10 cells allot
+hex
 
 : \\ postpone \ ; immediate
 
@@ -173,6 +173,7 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	0 dcnt !
 	0 stk !
 	s" _reset" evaluate s" marker _reset" evaluate ;
+
 0 value buf
 	: bufa buf @ ;
 	: bufb buf 1 cells + @ ;
@@ -183,8 +184,8 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	: >bufc buf 2 cells + ! ;
 	: >bufd buf 3 cells + ! ; 
 	\ Read and write buf cells via index
-	: buf> ( n -- x ) cells buf + @ ;
-	: >buf ( x n -- ) cells buf + ! ;
+	: buf. ( n -- x ) cells buf + @ ; \ think buf>
+	: .buf ( x n -- ) cells buf + ! ; \ think >buf
 	
 \ use buf area as a stack
 	0 value _buf.stk.cnt \ stack counter
@@ -198,6 +199,15 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	: buf.cnt _buf.stk.cnt ;
 	
 : my-mrk s" marker my-mrk" evaluate ;
+: ofs 
+	( n val -- n cells val +, cell offset from defined value  ) 
+	\ ofs =  offset
+	\ val is a predefined 'value' variable
+	swap cells + ;
+: .ofs \ to offset, like >ofs
+	ofs ! ;
+: ofs. \ from offset, like ofs>
+	ofs @ ;
 
 here to buf
 100 cells allot
@@ -207,6 +217,6 @@ marker _reset
 cr cr ." Current here: " here .
 cr ." 10 cell buffer/array named tmp at address: " tmp .
 cr ." 100 cell buffer/array named buf at address: " buf . 
-cr ." Do a 'wl buf' for words to use buf." cr cr
+cr ." Do a 'wl buf' for words that manipulate buf." cr cr
 hex
 
