@@ -1,7 +1,7 @@
 
 marker beginning-of-mine.f \ marks the beginning of my words
 
-hex create temp 10 cells allot
+hex create tmp 10 cells allot
 
 : \\ postpone \ ; immediate
 
@@ -182,6 +182,7 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	: >bufb buf 1 cells + ! ;
 	: >bufc buf 2 cells + ! ;
 	: >bufd buf 3 cells + ! ; 
+	\ Read and write buf cells via index
 	: buf> ( n -- x ) cells buf + @ ;
 	: >buf ( x n -- ) cells buf + ! ;
 	
@@ -190,12 +191,11 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	: buf.stack.init 0 to _buf.stk.cnt ;
 	\ push buf
 		: pbuf ( x -- ) 
-			_buf.stk.cnt 1 + dup >r cells buf + ! r> to _buf.stk.cnt ;
+			_buf.stk.cnt dup 1 + >r cells buf + ! r> to _buf.stk.cnt ;
 	\ get buf
 		: gbuf ( -- x ) 
-			_buf.stk.cnt dup >r cells buf + @ r> 1 - to _buf.stk.cnt ;
+			_buf.stk.cnt 1- dup >r cells buf + @ r> to _buf.stk.cnt ;
 	: buf.cnt _buf.stk.cnt ;
-	: buf.pick 1 + cells _buf.stk.cnt + @ ;
 	
 : my-mrk s" marker my-mrk" evaluate ;
 
@@ -205,6 +205,8 @@ here to buf
 marker _reset 
 
 cr cr ." Current here: " here .
-cr ." 100 cells at buf address: " buf . cr cr
+cr ." 10 cell buffer/array named tmp at address: " tmp .
+cr ." 100 cell buffer/array named buf at address: " buf . 
+cr ." Do a 'wl buf' for words to use buf." cr cr
 hex
 
