@@ -7,6 +7,8 @@ hex
 
 \ cell prior to here functions
 	: hd here cell - ; \ hd=address of cell before here
+	: >hd here cell - ! ;
+	: hd> here cell - @ ;
 	: hd.inc here cell - dup @ 1 + dup >r swap ! r> ; \ leaves new value on stack
 	: hd.dec here cell - dup @ 1 - dup >r swap ! r> ; \ leaves new value on stack
 	: hd0 ( -- flag ) hd.dec 0= ; \ count down
@@ -17,7 +19,7 @@ hex
 \ used in conjunction with , word.
 \ Does not impact dcnt variable like ,psh and ,pop do.
 \ quick and dirty TOS save.
-	: ,p here cell - dup dp ! @ ; 
+	: ,p here cell dup >r - @ 0 r> - allot ; 
 
 : a- ( addr -- x ) cell - @ ; \ a- = addr - cell look, like hd but for an address on the stack
 : times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
@@ -39,7 +41,7 @@ variable dcnt 0 dcnt !
 : ,npop 0 do ,pop loop ;
 : ,pic 1+ cells dp @ swap - @ ;
 : ,npic cells here dup rot - ?do i @ cell +loop ;
-: ,peek dp @ cell - @ ;
+: ,peek here cell - @ ;
 : ,drop 0 cell - dp +! 0 1 - dcnt +! ; \ dictionary drop
 : ,ndrop 0 ?do ,drop loop ;
 : ,swap ,pop ,pop swap , , ;

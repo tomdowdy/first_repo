@@ -2,10 +2,10 @@
 
 \ 1 cells is used instead of cell since some forths dont have cell word
 
-: ipada depth if pad ! then ; \ i stands for 'in' or '>' in forth parlance, i is simpler
-: ipadb depth if pad 1 cells + ! then ;
-: ipadc depth if pad 2 cells + ! then ;
-: ipadd depth if pad 3 cells + ! then ;
+: >pada depth if pad ! then ; 
+: >padb depth if pad 1 cells + ! then ;
+: >padc depth if pad 2 cells + ! then ;
+: >padd depth if pad 3 cells + ! then ;
 : pada pad @ ;
 : padb pad 1 cells + @ ;
 : padc pad 2 cells + @ ;
