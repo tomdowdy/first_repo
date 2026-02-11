@@ -211,6 +211,8 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 : ofs. \ from offset, like ofs>
 	ofs @ ;
 
+: pp postpone postpone ; immediate
+
 here to buf
 100 cells allot
             
