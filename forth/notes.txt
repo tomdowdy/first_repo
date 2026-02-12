@@ -1,4 +1,4 @@
-Holds forth code.
+This folder hold general forth info and code.
 
 https://hub.gesis.mybinder.org/user/hcchengithub-project-k-h3kpz0md/notebooks/Play%20with%20the%20FORTH%20kernel%20on%20jupyter%20notebook.ipynb
 project k
@@ -14,3 +14,7 @@ https://sourceforge.net/projects/min3rd/
 
 *****interesting forth info https://wiki.xxiivv.com/site/forth.html *************************************
 https://www.ultratechnology.com/chips.htm
+
+** espforth stuff from ting https://github.com/PeterForth/espforth-addons/blob/main/ESP32FORTH_62-TING.pdf
+
+
