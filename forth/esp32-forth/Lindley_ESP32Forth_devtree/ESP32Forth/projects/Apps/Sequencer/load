@@ -1,0 +1,20 @@
+\ Sequencer Load File
+#include Apps/Sequencer/sequencer_hwd.fth
+#include Utils/structures.fth
+#include Utils/formatbuffer.fth
+#include Utils/stringtable.fth
+#include Drivers/ST7735.fth
+#include Graphics/Font5x7.fth
+#include Graphics/text.fth
+#include Drivers/rotaryencoder2.fth
+#include Drivers/multi_MCB.fth
+#include Drivers/midi.fth
+#include Apps/Sequencer/sequence_storage.fth
+#include Apps/Sequencer/constants_variables.fth
+#include Apps/Sequencer/runtimeSequenceUI.fth
+#include Apps/Sequencer/programmingSequenceUI.fth
+#include Apps/Sequencer/sequencer.fth
+
+
+
+

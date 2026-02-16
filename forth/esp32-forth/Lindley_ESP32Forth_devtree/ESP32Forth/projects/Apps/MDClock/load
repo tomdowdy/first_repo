@@ -1,0 +1,13 @@
+\ Multi-Display Clock Load Page
+
+#include Utils/structures.fth
+#include Utils/ntp.fth
+#include Utils/time.fth
+#include Utils/timezone.fth
+#include Apps/MDClock/tzrules.fth
+#include Apps/MDClock/WS2812.fth
+#include Apps/MDClock/SSD1306-MD.fth
+#include Apps/MDClock/icons.fth
+#include Apps/MDClock/eventpatterns.fth
+#include Apps/MDClock/main.fth
+

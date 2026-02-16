@@ -1,0 +1,4 @@
+\ Pocket Watch Load Page
+#include Drivers/GC9A01.fth
+#include Apps/PocketWatch/bmpreader.fth
+#include Apps/PocketWatch/main.fth

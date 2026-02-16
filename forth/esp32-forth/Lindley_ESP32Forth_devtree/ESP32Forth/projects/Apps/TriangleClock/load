@@ -1,0 +1,12 @@
+\ Triangle Clock Load Page
+
+#include Utils/structures.fth
+#include Utils/ntp.fth
+#include Utils/time.fth
+#include Utils/timezone.fth
+#include Apps/TriangleClock/tzrules.fth
+#include Apps/TriangleClock/WS2812.fth
+#include Apps/TriangleClock/patterns.fth
+#include Apps/TriangleClock/secrets.fth
+#include Apps/TriangleClock/triangleclock.fth
+

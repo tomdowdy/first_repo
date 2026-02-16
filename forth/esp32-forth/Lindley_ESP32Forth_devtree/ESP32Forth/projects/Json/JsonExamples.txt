@@ -1,0 +1,218 @@
+Json Examples
+
+EX. 0
+
+{\"a\":3, \"b\":{\"c\":\"d\"}}
+
+EX. 1
+
+[{
+  "id": 1,
+  "first_name": "Jeanette",
+  "last_name": "Penddreth",
+  "email": "jpenddreth0@census.gov",
+  "gender": "Female",
+  "ip_address": "26.58.193.2"
+}, {
+  "id": 2,
+  "first_name": "Giavani",
+  "last_name": "Frediani",
+  "email": "gfrediani1@senate.gov",
+  "gender": "Male",
+  "ip_address": "229.179.4.212"
+}, {
+  "id": 3,
+  "first_name": "Noell",
+  "last_name": "Bea",
+  "email": "nbea2@imageshack.us",
+  "gender": "Female",
+  "ip_address": "180.66.162.255"
+}, {
+  "id": 4,
+  "first_name": "Willard",
+  "last_name": "Valek",
+  "email": "wvalek3@vk.com",
+  "gender": "Male",
+  "ip_address": "67.76.188.26"
+}]
+
+EX. 2
+
+{
+  "colors": [
+    {
+      "color": "black",
+      "category": "hue",
+      "type": "primary",
+      "code": {
+        "rgba": [255,255,255,1],
+        "hex": "#000"
+      }
+    },
+    {
+      "color": "white",
+      "category": "value",
+      "code": {
+        "rgba": [0,0,0,1],
+        "hex": "#FFF"
+      }
+    },
+    {
+      "color": "red",
+      "category": "hue",
+      "type": "primary",
+      "code": {
+        "rgba": [255,0,0,1],
+        "hex": "#FF0"
+      }
+    },
+    {
+      "color": "blue",
+      "category": "hue",
+      "type": "primary",
+      "code": {
+        "rgba": [0,0,255,1],
+        "hex": "#00F"
+      }
+    },
+    {
+      "color": "yellow",
+      "category": "hue",
+      "type": "primary",
+      "code": {
+        "rgba": [255,255,0,1],
+        "hex": "#FF0"
+      }
+    },
+    {
+      "color": "green",
+      "category": "hue",
+      "type": "secondary",
+      "code": {
+        "rgba": [0,255,0,1],
+        "hex": "#0F0"
+      }
+    },
+  ]
+}
+
+EX. 3
+
+{
+    "glossary": {
+        "title": "example glossary",
+		"GlossDiv": {
+            "title": "S",
+			"GlossList": {
+                "GlossEntry": {
+                    "ID": "SGML",
+					"SortAs": "SGML",
+					"GlossTerm": "Standard Generalized Markup Language",
+					"Acronym": "SGML",
+					"Abbrev": "ISO 8879:1986",
+					"GlossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+						"GlossSeeAlso": ["GML", "XML"]
+                    },
+					"GlossSee": "markup"
+                }
+            }
+        }
+    }
+}
+
+EX. 4
+
+{"menu": {
+  "id": "file",
+  "value": "File",
+  "popup": {
+    "menuitem": [
+      {"value": "New", "onclick": "CreateNewDoc()"},
+      {"value": "Open", "onclick": "OpenDoc()"},
+      {"value": "Close", "onclick": "CloseDoc()"}
+    ]
+  }
+}}
+
+EX. 5
+
+{"widget": {
+    "debug": "on",
+    "window": {
+        "title": "Sample Konfabulator Widget",
+        "name": "main_window",
+        "width": 500,
+        "height": 500
+    },
+    "image": { 
+        "src": "Images/Sun.png",
+        "name": "sun1",
+        "hOffset": 250,
+        "vOffset": 250,
+        "alignment": "center"
+    },
+    "text": {
+        "data": "Click Here",
+        "size": 36,
+        "style": "bold",
+        "name": "text1",
+        "hOffset": 250,
+        "vOffset": 100,
+        "alignment": "center",
+        "onMouseUp": "sun1.opacity = (sun1.opacity / 100) * 90;"
+    }
+}}  
+
+
+EX. 6
+
+{
+    "fruit": "Apple",
+    "size": "Large",
+    "color": "Red"
+}
+
+EX. 7
+
+{
+    "quiz": {
+        "sport": {
+            "q1": {
+                "question": "Which one is correct team name in NBA?",
+                "options": [
+                    "New York Bulls",
+                    "Los Angeles Kings",
+                    "Golden State Warriros",
+                    "Huston Rocket"
+                ],
+                "answer": "Huston Rocket"
+            }
+        },
+        "maths": {
+            "q1": {
+                "question": "5 + 7 = ?",
+                "options": [
+                    "10",
+                    "11",
+                    "12",
+                    "13"
+                ],
+                "answer": "12"
+            },
+            "q2": {
+                "question": "12 - 8 = ?",
+                "options": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "answer": "4"
+            }
+        }
+    }
+}
+ 
+
+ 

@@ -1,0 +1,9 @@
+\ Pseudo Nixie Program Loader
+
+#include Apps/PseudoNixie/hardware.fth
+#include Apps/PseudoNixie/st7735.fth
+
+\ #include Graphics/Font5x7.fth
+\ #include Graphics/text.fth
+
+\ #include Apps/PseudoNixie/PseudoNixie.fth

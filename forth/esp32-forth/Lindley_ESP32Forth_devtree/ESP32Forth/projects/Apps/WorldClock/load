@@ -1,0 +1,8 @@
+\ WorldClock App Load Page
+\ for TTGO T-Display hardware#include Apps/WorldClock/TTGO_T-DISPLAY.fth
+#include Apps/WorldClock/ST7789.fth#include Apps/WorldClock/lines.fth
+#include Apps/WorldClock/font5x7.fth
+#include Apps/WorldClock/text.fth
+#include Apps/WorldClock/shapes.fth
+#include Apps/WorldClock/ntp.fth
+#include Apps/WorldClock/structures.fth#include Apps/WorldClock/time.fth#include Apps/WorldClock/timezone.fth#include Apps/WorldClock/tzrules.fth#include Apps/WorldClock/worldclock.fth

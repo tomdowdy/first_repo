@@ -1,0 +1,11 @@
+\ Motion Clock App Load Page
+\ for TTGO T-Display hardware#include Utils/structures.fth
+#include Utils/ntp.fth
+#include Utils/time.fth
+#include Utils/timezone.fth
+#include Apps/MotionClock/hardware.fth
+#include Apps/MotionClock/ST7789.fth#include Apps/MotionClock/lines.fth
+#include Apps/MotionClock/font5x7.fth
+#include Apps/MotionClock/text.fth
+#include Apps/MotionClock/shapes.fth
+#include Apps/MotionClock/tzrules.fth#include Apps/MotionClock/main.fth

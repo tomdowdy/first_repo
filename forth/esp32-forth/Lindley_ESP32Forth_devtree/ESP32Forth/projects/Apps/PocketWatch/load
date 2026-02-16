@@ -1,0 +1,11 @@
+\ Pocket Watch Load Page
+#include Drivers/GC9A01.fth
+#include Apps/PocketWatch/Graphics.fth
+#include Graphics/font5x7.fth
+#include Graphics/text.fth
+#include Utils/ntp.fth
+#include Utils/structures.fth
+#include Utils/time.fth
+#include Utils/timezone.fth
+#include Apps/PocketWatch/tzrules.fth
+#include Apps/PocketWatch/main.fth

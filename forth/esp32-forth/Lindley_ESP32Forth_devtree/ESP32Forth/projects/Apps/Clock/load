@@ -1,0 +1,3 @@
+\ Clock App Load Page
+\ for TTGO T-Display hardware\ #include Apps/Clock/ntp.fth
+\ #include Apps/Clock/structures.fth\ #include Apps/Clock/time.fth#include Apps/Clock/timezone.fth#include Apps/Clock/tzrules.fth#include Apps/Clock/t.fth

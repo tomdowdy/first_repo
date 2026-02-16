@@ -1,0 +1,12 @@
+\ NeoPixel Matrix Display App Load Page
+#include Apps/NPDisplay/hardware.fth
+#include Apps/NPDisplay/ws2812.fth#include Apps/NPDisplay/colorfunctions.fth#include Apps/NPDisplay/8x8matrixsupport.fth#include Apps/NPDisplay/font5x7.fth
+#include Apps/NPDisplay/text.fth
+#include Apps/NPDisplay/patterns.fth#include Apps/NPDisplay/strtbl.fth#include Utils/structures.fth#include Utils/ntp.fth
+#include Utils/time.fth#include Utils/timezone.fth#include Apps/NPDisplay/tzrules.fth
+#include Apps/NPDisplay/stringformatter.fth
+#include Apps/NPDisplay/JsonParser.fth
+#include Apps/NPDisplay/prepareOWMGet.fth
+#include Apps/NPDisplay/OWMCCData.fth
+#include Apps/NPDisplay/main.fth
+

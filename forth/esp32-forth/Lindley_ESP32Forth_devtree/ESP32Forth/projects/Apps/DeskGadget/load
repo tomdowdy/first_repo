@@ -1,0 +1,33 @@
+\ Desk Gadget Load Page
+
+#include Utils/map.fth
+#include Utils/formatbuffer.fth
+#include Utils/tones.fth
+#include Utils/structures.fth
+#include Utils/ntp.fth
+#include Utils/time.fth
+#include Utils/timezone.fth
+#include Apps/DeskGadget/tzrules.fth
+#include Apps/DeskGadget/hardware.fth
+#include Drivers/ILI9341.fth
+#include Graphics/graphics.fth
+#include Graphics/font5x7.fth
+#include Graphics/text.fth
+#include Graphics/colors.fth
+#include Graphics/colorfunctions16.fth
+#include Graphics/palettes16.fth
+#include Drivers/XPT2046.fth
+#include Utils/button.fth
+#include Apps/DeskGadget/dClockPage.fth
+#include Apps/DeskGadget/aClockPage.fth
+#include Apps/DeskGadget/tClockPage.fth
+#include Apps/DeskGadget/timerPage.fth
+#include Apps/DeskGadget/alarmPage.fth
+#include Apps/DeskGadget/patternExit.fth
+#include Apps/DeskGadget/webs.fth
+#include Apps/DeskGadget/plasma.fth
+#include Apps/DeskGadget/sierpinski.fth
+#include Apps/DeskGadget/funPage.fth
+#include Apps/DeskGadget/main.fth
+
+

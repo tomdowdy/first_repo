@@ -1,0 +1,26 @@
+
+ESP32Forth - LEDC interfaces
+
+From esp32-hal-ledc.h
+
+//channel 0-15 resolution 1-16bits freq limits depend on resolution
+
+double      ledcSetup(uint8_t channel, double freq, uint8_t resolution_bits);
+void        ledcWrite(uint8_t channel, uint32_t duty);
+double      ledcWriteTone(uint8_t channel, double freq);
+double      ledcWriteNote(uint8_t channel, note_t note, uint8_t octave);
+uint32_t    ledcRead(uint8_t channel);
+double      ledcReadFreq(uint8_t channel);
+void        ledcAttachPin(uint8_t pin, uint8_t channel);
+void        ledcDetachPin(uint8_t pin);
+
+ESP32Forth Words
+
+ledcSetup ( channel freq resolution -- actualFreq )
+ledcAttachPin (pin channel -- )
+ledcDetachPin ( pin -- )
+ledcRead ( channel -- n )
+ledcReadFreq ( channel -- freq ) Get frequency (x 1,000,000)
+ledcWrite (channel duty -- )
+ledcWriteTone ( channel freq -- f ) Write tone frequency (x 1000)
+ledWriteNote (channel note octave -- freq )

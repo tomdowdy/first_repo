@@ -1,0 +1,11 @@
+\ Spirograph Loader for the CYD
+
+#include Hardware/CYD.fth
+
+#include Utils/map.fth
+#include Apps/CYD_Spirograph/ILI9341.fth
+#include Apps/CYD_Spirograph/graphics.fth
+#include Apps/CYD_Spirograph/spirograph.fth
+
+
+

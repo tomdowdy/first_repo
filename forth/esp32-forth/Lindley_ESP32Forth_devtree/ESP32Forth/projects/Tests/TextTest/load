@@ -1,0 +1,10 @@
+\ Earth Quake Map Test Load
+
+#include Tests/texttest/VROOM.fth
+#include Tests/texttest/ILI9341.fth
+#include Tests/texttest/graphics.fth
+#include Tests/texttest/colors.fth
+#include Tests/texttest/font5x7.fth
+#include Tests/texttest/text.fth
+
+
