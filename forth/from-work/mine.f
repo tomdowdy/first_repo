@@ -1,12 +1,14 @@
 
 marker beginning-of-mine.f \ marks the beginning of my words
 
-hex create temp 10 cells allot
+hex
 
 : \\ postpone \ ; immediate
 
 \ cell prior to here functions
 	: hd here cell - ; \ hd=address of cell before here
+	: >hd here cell - ! ;
+	: hd> here cell - @ ;
 	: hd.inc here cell - dup @ 1 + dup >r swap ! r> ; \ leaves new value on stack
 	: hd.dec here cell - dup @ 1 - dup >r swap ! r> ; \ leaves new value on stack
 	: hd0 ( -- flag ) hd.dec 0= ; \ count down
@@ -17,7 +19,7 @@ hex create temp 10 cells allot
 \ used in conjunction with , word.
 \ Does not impact dcnt variable like ,psh and ,pop do.
 \ quick and dirty TOS save.
-	: ,p here cell - dup dp ! @ ; 
+	: ,p here cell dup >r - @ 0 r> - allot ; 
 
 : a- ( addr -- x ) cell - @ ; \ a- = addr - cell look, like hd but for an address on the stack
 : times ( xt n -- * ) 0 do dup >r  execute r> loop drop ;
@@ -39,7 +41,7 @@ variable dcnt 0 dcnt !
 : ,npop 0 do ,pop loop ;
 : ,pic 1+ cells dp @ swap - @ ;
 : ,npic cells here dup rot - ?do i @ cell +loop ;
-: ,peek dp @ cell - @ ;
+: ,peek here cell - @ ;
 : ,drop 0 cell - dp +! 0 1 - dcnt +! ; \ dictionary drop
 : ,ndrop 0 ?do ,drop loop ;
 : ,swap ,pop ,pop swap , , ;
@@ -173,6 +175,7 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	0 dcnt !
 	0 stk !
 	s" _reset" evaluate s" marker _reset" evaluate ;
+
 0 value buf
 	: bufa buf @ ;
 	: bufb buf 1 cells + @ ;
@@ -182,22 +185,33 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	: >bufb buf 1 cells + ! ;
 	: >bufc buf 2 cells + ! ;
 	: >bufd buf 3 cells + ! ; 
-	: buf> ( n -- x ) cells buf + @ ;
-	: >buf ( x n -- ) cells buf + ! ;
+	\ Read and write buf cells via index
+	: buf. ( n -- x ) cells buf + @ ; \ think buf>
+	: .buf ( x n -- ) cells buf + ! ; \ think >buf
 	
 \ use buf area as a stack
 	0 value _buf.stk.cnt \ stack counter
 	: buf.stack.init 0 to _buf.stk.cnt ;
 	\ push buf
 		: pbuf ( x -- ) 
-			_buf.stk.cnt 1 + dup >r cells buf + ! r> to _buf.stk.cnt ;
+			_buf.stk.cnt dup 1 + >r cells buf + ! r> to _buf.stk.cnt ;
 	\ get buf
 		: gbuf ( -- x ) 
-			_buf.stk.cnt dup >r cells buf + @ r> 1 - to _buf.stk.cnt ;
+			_buf.stk.cnt 1- dup >r cells buf + @ r> to _buf.stk.cnt ;
 	: buf.cnt _buf.stk.cnt ;
-	: buf.pick 1 + cells _buf.stk.cnt + @ ;
 	
 : my-mrk s" marker my-mrk" evaluate ;
+: ofs 
+	( n val -- n cells val +, cell offset from defined value  ) 
+	\ ofs =  offset
+	\ val is a predefined 'value' variable
+	swap cells + ;
+: .ofs \ to offset, like >ofs
+	ofs ! ;
+: ofs. \ from offset, like ofs>
+	ofs @ ;
+
+: pp postpone postpone ; immediate
 
 here to buf
 100 cells allot
@@ -205,6 +219,8 @@ here to buf
 marker _reset 
 
 cr cr ." Current here: " here .
-cr ." 100 cells at buf address: " buf . cr cr
+cr ." 10 cell buffer/array named tmp at address: " tmp .
+cr ." 100 cell buffer/array named buf at address: " buf . 
+cr ." Do a 'wl buf' for words that manipulate buf." cr cr
 hex
 
