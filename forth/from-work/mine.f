@@ -213,9 +213,12 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 
 : pp postpone postpone ; immediate
 
+: hh history# ;
+
 here to buf
 100 cells allot
-            
+
+      
 marker _reset 
 
 cr cr ." Current here: " here .
