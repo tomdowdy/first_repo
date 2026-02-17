@@ -1,0 +1,107 @@
+
+ESP32Forth Floating Point Functions
+
+NOTES:
+FP numbers are indicated by an "e" appended to them
+the symbol r in the stack pictures below refers to a rational number
+aka floating point number.
+
+ex: 3.14159e
+
+FLOAT OPCODES
+-------------
+DOFLIT ( --- ) Puts a float from the next cell onto float stack.
+FP@ ( -- a ) Returns the floating point stack pointer
+FP! ( a -- ) Sets the floating point stack pointer to address a
+SF@ ( a -- r ) Single precision load
+SF! ( r a -- ) Single precision store
+SF, ( r -- )   Stores a floating point number in the dictionary
+FDEPTH ( -- n ) Returns depth of floating point stack
+FDUP ( r -- r r )
+FNIP ( ra rb -- rb )
+FDROP ( r -- )
+FOVER ( ra rb -- ra rb ra )
+FSWAP ( ra rb -- rb ra )
+F0< ( r -- f )
+F0= ( r -- f )
+F+ ( r r -- r )
+F- ( r r -- r )
+F* ( r r -- r )
+F/ ( r r -- r )
+1/F ( r -- r )
+S>F ( n -- r )
+F>S ( r -- n )
+
+HIGH LEVEL
+----------
+F= ( r r -- f )
+F< ( r r -- f )
+F> ( r r -- f )
+F<= ( r r -- f )
+F>= ( r r -- f )
+F<> ( r r -- f )
+
+SFLOAT ( -- 4 )
+SFLOATS ( n -- n*4 )
+SFLOAT+ ( a -- a+4 )
+
+AFLITERAL ( r -- )
+FLITERAL ( r -- ) IMMEDIATE
+
+FCONSTANT ( r "name" )
+FVARIABLE ( "name" )
+FARRAY (size "name" -- ) ( i -- addr )
+
+PI ( -- r )
+
+set-precision ( n -- )
+F. ( r -- )
+
+
+FSQRT ( r r -- r )
+
+
+  /* Floating Point Functions */ \
+  Y(DOFLIT, *++fp = *(float *) ip++) \
+  X("fp@", FPAT, DUP; tos = (cell_t) fp) \
+  X("fp!", FPSTORE, fp = (float *) tos; DROP) \
+  X("sf@", FAT, *++fp = *(float *) tos; DROP) \
+  X("sf!", FSTORE, *(float *) tos = *fp--; DROP) \
+  X("fdup", FDUP, fp[1] = *fp; ++fp) \
+  X("fnip", FNIP, fp[-1] = *fp; --fp) \
+  X("fdrop", FDROP, --fp) \
+  X("fover", FOVER, fp[1] = fp[-1]; ++fp) \
+  X("fswap", FSWAP, float ft = fp[-1]; fp[-1] = *fp; *fp = ft) \
+  X("fnegate", FNEGATE, *fp = -*fp) \
+  X("f0<", FZLESS, DUP; tos = *fp-- < 0.0f ? -1 : 0) \
+  X("f0=", FZEQUAL, DUP; tos = *fp-- == 0.0f ? -1 : 0) \
+  X("f+", FPLUS, fp[-1] += *fp; --fp) \
+  X("f-", FMINUS, fp[-1] -= *fp; --fp) \
+  X("f*", FSTAR, fp[-1] *= *fp; --fp) \
+  X("f/", FSLASH, fp[-1] /= *fp; --fp) \
+  X("1/f", FINVERSE, *fp = 1.0 / *fp) \
+  X("s>f", STOF, *++fp = (float) tos; DROP) \
+  X("f>s", FTOS, DUP; tos = (cell_t) *fp--) \
+  /* Trig Functions */ \
+  X("fdtorad", FDTORAD, *fp *= 0.01745329252) \ 
+  X("fradtod", FRADTOD, *fp *= 57.295779513) \ 
+  X("fsin", FSIN, *fp = sinf(*fp)) \ 
+  X("fsinh", FSINH, *fp = sinhf(*fp)) \ 
+  X("fasin", FASIN, *fp = asinf(*fp)) \ 
+  X("fcos", FCOS, *fp = cosf(*fp)) \ 
+  X("fcosh", FCOSH, *fp = coshf(*fp)) \ 
+  X("facos", FACOS, *fp = acosf(*fp)) \ 
+  X("ftan", FTAN, *fp = tanf(*fp)) \ 
+  X("ftanh", FTANH, *fp = tanhf(*fp)) \ 
+  X("fatan", FATAN, *fp = atanf(*fp)) \ 
+  X("fatan2", FATAN2, fp[-1] = atan2f(fp[-1], *fp); --fp) \ 
+  X("fabs", FABS, *fp = fabsf(*fp)) \ 
+  X("ffloor", FFLOOR, *fp = floorf(*fp)) \ 
+  X("fceil", FCEIL, *fp = ceilf(*fp)) \ 
+  X("flog", FLOG, *fp = logf(*fp)) \ 
+  X("flog10", FLOG10, *fp = log10f(*fp)) \ 
+  X("fsqrt", FSQRT, *fp = sqrtf(*fp)) \ 
+  X("fpow", FPOW, fp[-1] = powf(fp[-1], *fp); --fp) \ 
+
+: fdepth ( -- n ) fp@ fp0 - 4 / ;
+ 

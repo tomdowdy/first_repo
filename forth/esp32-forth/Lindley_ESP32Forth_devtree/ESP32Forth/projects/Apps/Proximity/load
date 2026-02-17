@@ -1,0 +1,5 @@
+\ Proximity Experiment Load Page
+
+#include Apps/Proximity/WS2812.fth
+#include Apps/Proximity/Proximity.fth
+

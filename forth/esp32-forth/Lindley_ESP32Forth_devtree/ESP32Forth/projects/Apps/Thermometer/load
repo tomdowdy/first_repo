@@ -1,0 +1,5 @@
+\ Vertical Thermometer Temperature Gauge 
+\ Load Page for TTGO T7 hardware#include Apps/Thermometer/TTGO_T7.fth
+#include Apps/Thermometer/ntp.fth
+#include Apps/Thermometer/structures.fth#include Apps/Thermometer/time.fth#include Apps/Thermometer/timezone.fth#include Apps/Thermometer/tzrules.fth
+#include Apps/Thermometer/colorfunctions.fth#include Apps/Thermometer/ws2812.fth#include Apps/Thermometer/thermometer.fth

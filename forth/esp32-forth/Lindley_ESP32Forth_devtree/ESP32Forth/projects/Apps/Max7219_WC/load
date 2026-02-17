@@ -1,0 +1,18 @@
+\ MAX7219 Weather Clock Load Page
+
+\ #include Utils/stringutils.fth
+\ #include Utils/formatbuffer.fth
+\ #include Utils/structures.fth
+\ #include Utils/ntp.fth
+\ #include Utils/time.fth
+\ #include Utils/timezone.fth
+\ #include Utils/tzrules.fth
+\ #include Json/JsonParser.fth
+\ #include Graphics/font5x7.fth
+\ #include Drivers/MAX7219.fth
+\ #include Apps/MAX7219_WC/secrets.fth
+\ #include Apps/MAX7219_WC/prepareOWMGet.fth
+\ #include Apps/MAX7219_WC/OWMCCData.fth
+
+#include Apps/MAX7219_WC/main.fth
+

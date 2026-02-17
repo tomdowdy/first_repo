@@ -1,0 +1,3 @@
+\ Slide Show App Load Page
+\ for TTGO T4 hardware#include Apps/SlideShow/TTGO_T4.fth#include Apps/SlideShow/ILI9341.fth#include Apps/SlideShow/graphics.fth#include Apps/SlideShow/slideshow.fth
+

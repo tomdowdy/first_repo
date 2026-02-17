@@ -1,0 +1,354 @@
+    // Network functions
+    CustomFunctionTable[3] = (CFunc0) udpType;
+    CustomFunctionTable[4] = (CFunc0) tcpType;
+    CustomFunctionTable[5] = (CFunc0) errOK;
+    CustomFunctionTable[6] = (CFunc0) errClosed;
+    CustomFunctionTable[7] = (CFunc0) errOverflow;
+    CustomFunctionTable[8] = (CFunc0) errTimeout;
+    CustomFunctionTable[9] = (CFunc0) netConnect;
+    CustomFunctionTable[10] = (CFunc0) netDispose;
+    CustomFunctionTable[11] = (CFunc0) tcpWrite;
+    CustomFunctionTable[12] = (CFunc0) udpSend;
+    CustomFunctionTable[13] = (CFunc0) setReceiveTimeoutMS;
+    CustomFunctionTable[14] = (CFunc0) setReadTimeoutMS;
+    CustomFunctionTable[15] = (CFunc0) netRead;
+    CustomFunctionTable[16] = (CFunc0) netReadLn;
+    CustomFunctionTable[17] = (CFunc0) netTCPServer;
+    CustomFunctionTable[18] = (CFunc0) netTCPServerAccept;
+
+
+
+
+
+
+// Network Functions
+
+#define RECEIVE_TIMEOUT_MS  250
+#define READ_TIMEOUT_MS    3000
+
+#define ERR_OK        0
+#define ERR_CLOSED   -1
+#define ERR_OVERFLOW -2
+#define ERR_TIMEOUT  -3
+
+static cell_t udpType() {
+  return 1;
+}
+
+static cell_t tcpType() {
+  return 2;
+}
+
+static cell_t errOK() {
+  return ERR_OK;
+}
+
+static cell_t errClosed() {
+  return ERR_CLOSED;
+}
+
+static cell_t errOverflow() {
+  return ERR_OVERFLOW;
+}
+
+static cell_t errTimeout() {
+  return ERR_TIMEOUT;
+}
+
+
+struct forth_netconn {
+  struct netconn* conn;
+  struct netbuf* nbuf;
+  int bufpos;
+  int readTimeoutMS;
+};
+
+// Set esp-idf internal receive timeout default is RECEIVE_TIMEOUT_MS
+static void setReceiveTimeoutMS(struct forth_netconn* conn, int timeout) {
+  netconn_set_recvtimeout(conn->conn, timeout);
+}
+
+// Set read timeout default is READ_TIMEOUT_MS
+static void setReadTimeoutMS(struct forth_netconn* conn, int timeout) {
+  conn->readTimeoutMS = timeout;
+}
+
+static struct forth_netconn* make_forth_netconn(struct netconn* conn) {
+
+  if (conn == NULL) {
+    return NULL;
+  }
+
+  struct forth_netconn *result = malloc(sizeof(struct forth_netconn));
+  result->conn = conn;
+  result->nbuf = NULL;
+  result->bufpos = 0;
+  result->readTimeoutMS = READ_TIMEOUT_MS;
+  return result;
+}
+
+static struct forth_netconn* forth_netcon_new(int type) {
+  enum netconn_type con_type;
+  // fprintf(stderr, "\nNew netcon type: %d\n", type);
+  switch (type) {
+    case 1: 
+      con_type = NETCONN_UDP;
+      break;
+    case 2: 
+      con_type = NETCONN_TCP;
+      break;
+    default:
+      return NULL;
+  }
+  struct netconn* conn = netconn_new(con_type);
+  fprintf(stderr, "\nConnection: %p\n", conn);
+  netconn_set_recvtimeout(conn, RECEIVE_TIMEOUT_MS);
+  return make_forth_netconn(conn);
+}
+
+static int forth_netcon_connect(struct forth_netconn* conn, char* host, uint16_t port) {   
+  err_t err; 
+  ip_addr_t ip;
+
+  // fprintf(stderr, "\nGetting hostname: %s\n", host);
+  err = netconn_gethostbyname(host, &ip);
+  if (err != ERR_OK) {
+    fprintf(stderr, "Failed to resolve host %s. Error: %d\n", host, err);
+    return err;
+  }
+  // fprintf(stderr, "\nRemote IP address: %s\n", ip4addr_ntoa(&ip));
+
+  // fprintf(stderr, "\nConnecting to %s:%d, conn: %p\n", host, port, conn);
+  err = netconn_connect(conn->conn, &ip, port);
+  if (err != ERR_OK) {
+    fprintf(stderr, "Failed to connect to %s:%d. Error: %d\n", host, port, err);
+  }
+  return err;
+}
+
+// High level network connection function
+static struct forth_netconn* netConnect(cell_t type, cell_t hostPtr, cell_t port) {
+
+  struct forth_netconn* cPtr = forth_netcon_new((int)type);
+  if (cPtr == NULL) {
+    fprintf(stderr, "netCpnnect: failed netcon_new\n");
+    return NULL;
+  }
+
+  char hostBuf[32];
+  memset(hostBuf, 0, sizeof(hostBuf));
+
+  char *host = (char *) hostPtr;
+  int hostLen = host[0];
+
+  for (int i = 0; i < hostLen; i++) {
+    hostBuf[i] = host[i + 1];
+  }
+
+  // fprintf(stderr, "Type: %d, Host: %s, Port: %d\n", (int) type, hostBuf, (int) port);
+
+  int result = forth_netcon_connect(cPtr, hostBuf, (uint16_t) port);
+  if (result == ERR_OK) {
+    return cPtr;
+  } else {
+    fprintf(stderr, "netConnect: failed to connect\n");
+    return NULL;
+  }
+}
+
+// Closes network connection but doesn't free resources
+static void forth_netcon_close(struct forth_netconn* conn) {
+  // fprintf(stderr, "Closing connection %p\n", conn);
+  netconn_close(conn->conn);
+}
+
+// Closes network connection and frees resources
+static void forth_netcon_delete(struct forth_netconn* conn) {
+  // fprintf(stderr, "Deleting connection %p\n", conn);
+  netconn_delete(conn->conn);
+  if (conn->nbuf != NULL) {
+    netbuf_delete(conn->nbuf);
+  }\
+  free(conn);
+}
+
+static void netDispose(cell_t conn) {
+
+  if ((struct forth_netconn*) conn != NULL) {
+    forth_netcon_close((struct forth_netconn*) conn);
+    forth_netcon_delete((struct forth_netconn*) conn);
+  } else {
+    fprintf(stderr, "netDispose: Cannot dispose of Null handle\n");
+  }
+}
+
+// Send the content of the given buffer to a UDP socket.
+static int udpSend(cell_t conn, cell_t data, cell_t len) {
+
+  // fprintf(stderr, "Sending data len: %d conn: %p\n", (int) len, (struct forth_netconn*) conn);
+  err_t err;
+  struct netbuf* buffer = netbuf_new();
+  if (buffer == NULL) {
+    return ERR_MEM;
+  }
+  void* memory = netbuf_alloc(buffer, (int) len);
+  if (memory == NULL) {
+    return ERR_MEM;
+  }
+  memcpy(memory, (void *) data, (int) len);
+  err = netconn_send(((struct forth_netconn*) conn)->conn, buffer);
+  if (err != ERR_OK) {
+    fprintf(stderr, "Failed to send data. Conn: %p. Error: %d\n", (struct forth_netconn*) conn, err);
+  }   
+  netbuf_delete(buffer);
+  return err;
+}
+
+// Write the content of the given buffer to a TCP socket.
+static int tcpWrite(cell_t conn, cell_t data, cell_t len) {
+
+  err_t err = netconn_write(((struct forth_netconn*) conn)->conn, (uint8_t *) data, (uint16_t) len, NETCONN_COPY);
+  if (err != ERR_OK) {
+    fprintf(stderr, "Failed to write data. Conn: %p. Error: %d\n", (struct forth_netconn*) conn, err);
+  }   
+  return err;
+}
+
+// RECEIVE FUNCTIONS
+
+static int _forth_netcon_receive(struct forth_netconn* conn, uint8_t* buffer, int size) {
+
+  if (conn->nbuf == NULL) {
+    struct netbuf *inbuf;
+
+    // Attempt to receive network data
+    err_t err = netconn_recv(conn->conn, &inbuf);
+    if (err != ERR_OK) {
+      if (err == -13) {
+        err = ERR_CLOSED;
+      }
+      return err;
+    }
+    // If we get here we have some data
+    conn->nbuf = inbuf;
+    conn->bufpos = 0;
+  }
+
+  // Copy the received data to user's buffer
+  int count = netbuf_copy_partial(conn->nbuf, buffer, size, conn->bufpos);
+  if (count > 0) {
+    conn->bufpos += count;
+    return count;
+  }
+
+  // No more data to copy
+  netbuf_delete(conn->nbuf);
+  conn->nbuf = NULL;
+  conn->bufpos = 0;
+  return ERR_OK; 
+}
+
+static int forth_netcon_receive(struct forth_netconn* conn, uint8_t* buffer, int size) {
+
+  err_t err = ERR_OK;
+  uint32_t endTime = millis() + conn->readTimeoutMS;
+ 
+  while (endTime > millis()) {
+    // Attempt to receive network data
+    err = _forth_netcon_receive(conn, buffer, size);
+
+    // If > 0 then data has been copied into buffer, return count of bytes copied
+    if (err > 0) {
+      return err;
+    }
+    // Timeout ?
+    else if ((err == ERR_TIMEOUT) || (err == ERR_OK)) {
+      delayMS(100);
+    } else {
+      return err;
+    }
+  }
+  return ERR_CLOSED;
+}
+
+// Read maximum `size` amount of bytes into the buffer.
+// Returns count of bytes read or error if result < 0
+// Typical errors are ERR_TIMEOUT or ERR_CLOSED if connection was closed
+static int netRead(cell_t conn, cell_t buffer, cell_t size) {
+
+  return forth_netcon_receive((struct forth_netconn*) conn, (uint8_t *) buffer, (uint16_t) size);
+}
+
+// Read one line into the given buffer. The line terminator is CRLF.
+// Returns count of bytes read or error if result < 0
+// CRLF is returned in buffer and are part of count
+// Typical errors are ERR_TIMEOUT or ERR_CLOSED if connection was closed
+static int netReadLn(cell_t conn, cell_t buffer, cell_t size) {
+
+  uint8_t *buf = (uint8_t *) buffer;
+
+  for (int i = 0; i < (int) size; i++) {
+    // Read a single char into the buffer   
+    int err = forth_netcon_receive((struct forth_netconn*) conn, buf + i, 1);
+    if (err < 0) {   // Was EOF reached or an error occurred ?
+      if (i >= 1) {  // Was a previous char read ?
+        return i;
+      } else {
+        return err;
+      }
+    }
+    // If the char read was a LF and there are other chars in the buffer
+    if ((buf[i] == 10) && (i >= 1)) {
+      if (buf[i - 1] == 13) {  // Was previous char a CR ?
+        return i + 1;
+      }
+    }
+  }
+  // Buffer overflow
+  return ERR_OVERFLOW;
+}
+
+// TCP SERVER FUNCTIONS
+
+// Create a TCP server which will listen on the specified port for client connections.
+// This function returns a handle to the created server which must be passed to
+// netTCPServerAccept. A return value < 0 indicates an error has occurred.
+static struct netconn* netTCPServer(cell_t port) {
+
+  struct netconn* conn = netconn_new(NETCONN_TCP);
+
+  // Bind connection to any IP address at port
+  err_t err = netconn_bind(conn, NULL, (int) port);
+  if (err != ERR_OK) {
+    fprintf(stderr, "Error: %d binding to port: %d\n", err, (int) port);
+    return NULL;
+  }
+  // Tell connection to go into listening mode.
+  err = netconn_listen(conn);
+  if (err != ERR_OK) {
+    fprintf(stderr, "Error: %d on netconn_listen\n", err);
+    return NULL;
+  }
+  return conn;
+}
+
+// Wait for a client to connect on the server specified by the serverHandle
+// When a client connection is sensed, this function will return a handle to
+// the client which the application can manipulate. After the client is
+// handled an application can call this again for the next client.
+static struct forth_netconn* netTCPServerAccept(cell_t serverHandle) {
+
+  struct netconn* conn;
+
+  while (true) {
+
+    delayMS(1);
+
+    err_t err = netconn_accept((struct netconn *) serverHandle, &conn);
+    if (err != ERR_TIMEOUT) {
+      netconn_set_recvtimeout(conn, RECEIVE_TIMEOUT_MS);
+      return make_forth_netconn(conn);
+    }
+  }
+}
+

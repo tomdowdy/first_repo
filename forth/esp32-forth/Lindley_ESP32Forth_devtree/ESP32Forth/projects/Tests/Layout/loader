@@ -1,0 +1,8 @@
+#include Hardware/TTGO_T-DISPLAY.fth
+#include Drivers/ST7789.fth
+#include Graphics/lines.fth
+#include Graphics/font5x7.fth
+#include Graphics/text.fth
+#include Graphics/shapes.fth
+#include Tests/Layout/layout.fth
+

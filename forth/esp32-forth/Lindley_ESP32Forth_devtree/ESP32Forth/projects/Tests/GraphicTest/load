@@ -1,0 +1,7 @@
+\ RA8876 Graphics Test Load
+
+#include Tests/GraphicTest/VROOM.fth
+#include Tests/GraphicTest/RA8876.fth
+#include Tests/GraphicTest/graphicstest.fth
+
+

@@ -1,0 +1,24 @@
+\ MagTag Weather Station Load Page
+
+#include Apps/MagTagWeather/secrets.fth
+#include Hardware/MagTag.fth
+#include Graphics/font5x7.fth
+#include Utils/stringutils.fth
+#include Utils/formatbuffer.fth
+#include Utils/ntp.fth
+#include Utils/structures.fth
+#include Utils/time.fth
+#include Utils/timezone.fth
+#include Apps/MagTagWeather/tzrules.fth
+#include Json/JsonParser.fth
+#include Drivers/IL0373_GRAY.fth
+#include Apps/MagTagWeather/icons.fth
+#include Apps/MagTagWeather/graphics.fth
+#include Apps/MagTagWeather/text.fth
+#include Apps/MagTagWeather/prepareOWMGet.fth
+#include Apps/MagTagWeather/OWMCCData.fth
+#include Apps/MagTagWeather/OWMFData.fth
+#include Apps/MagTagWeather/weather.fth
+
+
+

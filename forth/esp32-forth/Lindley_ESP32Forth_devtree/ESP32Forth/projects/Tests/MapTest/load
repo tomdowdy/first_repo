@@ -1,0 +1,7 @@
+\ Earth Quake Map Test Load
+
+#include Tests/maptest/VROOM.fth
+#include Tests/maptest/RA8876.fth
+\ #include Tests/maptest/map.fth
+
+

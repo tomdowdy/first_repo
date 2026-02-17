@@ -1,0 +1,33 @@
+NOTES:
+
+Preparing ESP32 for operation
+
+The EQ program needs to have the map file ERP320.bmp
+stored in the SPIFFS. To do this, first load and run the
+ESP32 Arduino app called: 
+
+ESP32_OTA_FILESYS.ino
+
+In this app you can format the SPIFFS and copy
+the map file to the SPIFFS.
+
+Then upload ESP32forth
+
+and then
+
+load the CYD_EQMap program and run it.
+
+===========================================================
+
+Once an ESP32Forth program is remembered and therefore written
+to the SPIFFS filesystem the SPIFFS must be reformatted for a
+new application. Use the FormatSPIFFS Arduino program or the
+program mentioned above to do so.
+Once SPIFFS is reformatted, reload ESP32Forth to start new
+program development.
+
+
+
+
+
+

@@ -1,0 +1,7 @@
+\ MPU6050 test Load Page
+
+#include Apps/HourGlass/mpu6050test/hardware.fth
+#include Apps/HourGlass/mpu6050test/mpu6050.fth
+#include Apps/HourGlass/mpu6050test/main.fth
+
+

@@ -1,0 +1,7 @@
+\ 7 Segment Clock Load Page
+#include Apps/7SegClock/hardware.fth
+#include Apps/7SegClock/ws2812.fth#include Apps/7SegClock/colorfunctions.fth#include Apps/7SegClock/7segdriver.fth
+#include Utils/ntp.fth
+#include Utils/structures.fth#include Utils/time.fth#include Utils/timezone.fth#include Apps/7SegClock/tzrules.fth
+#include Apps/7SegClock/main.fth
+

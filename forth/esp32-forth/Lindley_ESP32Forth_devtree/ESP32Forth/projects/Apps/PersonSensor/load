@@ -1,0 +1,10 @@
+\ Person Sensor Loader
+
+#include Apps/PersonSensor/hardware.fth
+\ #include Drivers/personsensor.fth
+#include Apps/PersonSensor/st7735.fth
+
+\ #include Graphics/Font5x7.fth
+\ #include Graphics/text.fth
+
+\ #include Apps/PersonSensor/PersonSensor.fth

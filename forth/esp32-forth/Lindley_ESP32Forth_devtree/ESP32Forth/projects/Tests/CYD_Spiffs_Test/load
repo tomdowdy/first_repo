@@ -1,0 +1,2 @@
+#include Hardware/CYD.fth
+#include Tests/CYD_Spiffs_Test/SpiffsTest.fth

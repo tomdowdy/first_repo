@@ -1,0 +1,6 @@
+\ Motion Night Light Load Page
+
+#include Utils/map.fth#include Apps/MotionNightLight/hardware.fth
+#include Apps/MotionNightLight/WS2812.fth
+#include Apps/MotionNightLight/main.fth
+

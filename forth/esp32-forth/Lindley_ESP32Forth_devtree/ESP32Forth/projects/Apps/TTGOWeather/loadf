@@ -1,0 +1,24 @@
+\ Weather Station Load
+
+#include Apps/TTGOWeather/secrets.fth
+#include Hardware/TTGO_T4.fth
+#include Drivers/ILI9341V.fth
+#include Apps/TTGOWeather/icons.fth
+#include Graphics/graphics.fth
+#include Graphics/font5x7.fth
+#include Graphics/text.fth
+#include Graphics/colors.fth
+#include Utils/formatbuffer.fth
+#include Utils/ntp.fth
+#include Utils/structures.fth
+#include Utils/time.fth
+#include Utils/timezone.fth
+#include Apps/TTGOWeather/tzrules.fth
+#include Json/JsonParser.fth
+#include Apps/TTGOWeather/prepareOWMGet.fth
+#include Apps/TTGOWeather/OWMCCData.fth
+#include Apps/TTGOWeather/OWMFData.fth
+#include Apps/TTGOWeather/winddirections.fth
+#include Apps/TTGOWeather/Weather.fth
+
+
