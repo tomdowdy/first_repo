@@ -207,9 +207,9 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	\ m is anything resulting in a number
 	\ generally m will be an address, created by whatever means, and n is an integer offset
 	cells + ;
-: .ofs \ to offset, like >ofs
+: >ofs \ to offset
 	ofs ! ;
-: ofs. \ from offset, like ofs>
+: ofs> \ from offset
 	ofs @ ;
 
 : pp postpone postpone ; immediate
