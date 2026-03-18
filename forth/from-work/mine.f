@@ -202,10 +202,11 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 	
 : my-mrk s" marker my-mrk" evaluate ;
 : ofs 
-	( n val -- n cells val +, cell offset from defined value  ) 
+	( m n -- addr n cells +, cell offset from m  ) 
 	\ ofs =  offset
-	\ val is a predefined 'value' variable
-	swap cells + ;
+	\ m is anything resulting in a number
+	\ generally m will be an address, created by whatever means, and n is an integer offset
+	cells + ;
 : .ofs \ to offset, like >ofs
 	ofs ! ;
 : ofs. \ from offset, like ofs>
