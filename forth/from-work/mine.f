@@ -228,8 +228,8 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
         THEN
         prevname
 	hd.inc 80 = if
-		cr ." Prese space to continue........." cr
-		begin key dup bl <> if 2drop 2drop drop ,p drop exit then bl = until
+		cr ." Prese space to continue or any other key to exit........." cr
+		begin key dup bl <> if 2drop drop ,p drop exit then bl = until
 		0 >hd
 	then
     REPEAT drop
