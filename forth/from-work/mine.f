@@ -216,6 +216,27 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 
 : hh history# ;
 
+: pWORDS  ( -- )
+    0 ,
+    0 latest
+    BEGIN  dup 0<>
+    WHILE ( -- count NFA )
+        dup c@ flag_smudge and 0=
+        IF
+            dup id. tab cr? ?pause
+            swap 1+ swap
+        THEN
+        prevname
+	hd.inc 80 = if
+		cr ." Prese space to continue........." cr
+		begin key dup bl <> if 2drop 2drop drop ,p drop exit then bl = until
+		0 >hd
+	then
+    REPEAT drop
+    cr . ."  words" cr
+    ,p drop
+;
+
 here to buf
 100 cells allot
 
