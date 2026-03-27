@@ -13,6 +13,7 @@ hex
 	: hd.dec here cell - dup @ 1 - dup >r swap ! r> ; \ leaves new value on stack
 	: hd0 ( -- flag ) hd.dec 0= ; \ count down
 	: hdn ( n -- flag ) hd.inc = ; \ count up
+	: hd+ ( n -- n ) hd> + dup >hd ;
 
 \ pops item at cell before here onto stack
 \ and adjusts here
@@ -48,7 +49,7 @@ variable dcnt 0 dcnt !
 : ,rot ,pop ,pop ,pop rot , , , ;
 : ,-rot ,pop ,pop ,pop -rot , , , ;
 : ,cnt dcnt @ ;
-: ndrop 0 do drop loop ; \ stack multiple drop.
+: ndrop 0 ?do drop loop ; \ stack multiple drop.
 : ntuck ( s*j x n -- q*j x n*j ) 
 	dup depth 3 - > 
 	if 
@@ -217,30 +218,31 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 : hh history# ;
 
 : pWORDS  ( -- )
+	depth ,
     0 ,
     0 latest
-    BEGIN  dup 0<>
+	true >tmpa
+    BEGIN  dup 0<> tmpa and
     WHILE ( -- count NFA )
       	dup id. tab cr? ?pause
     	swap 1+ swap
         prevname
-	dup 0<> 
-	if dup c@ hd> + dup >hd 8a0 > 
-	if
-		cr cr ." Prese space to continue or any other key to exit........." cr cr
-		begin 
-			key dup bl <> 
-			if 
-				2drop drop ,p drop exit 
-			then 
-			bl = 
-			until
-			0 >hd
-	then
-	then
+		dup 0<> 
+		if dup c@ hd+ 8a0 >
+			if
+				cr cr ." Prese any key to continue or space to exit........." 
+				cr cr
+				key bl = 
+				if 
+					false >tmpa \ exit \ 2drop drop ,p drop exit 
+				then 
+				0 >hd
+			then
+		then
     REPEAT drop
     cr . ."  words" cr
     ,p drop
+	depth ,p - ndrop
 ;
 
 here to buf
