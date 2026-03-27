@@ -221,16 +221,22 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
     0 latest
     BEGIN  dup 0<>
     WHILE ( -- count NFA )
-        dup c@ flag_smudge and 0=
-        IF
-            dup id. tab cr? ?pause
-            swap 1+ swap
-        THEN
+      	dup id. tab cr? ?pause
+    	swap 1+ swap
         prevname
-	hd.inc 80 = if
-		cr ." Prese space to continue or any other key to exit........." cr
-		begin key dup bl <> if 2drop drop ,p drop exit then bl = until
-		0 >hd
+	dup 0<> 
+	if dup c@ hd> + dup >hd 8a0 > 
+	if
+		cr cr ." Prese space to continue or any other key to exit........." cr cr
+		begin 
+			key dup bl <> 
+			if 
+				2drop drop ,p drop exit 
+			then 
+			bl = 
+			until
+			0 >hd
+	then
 	then
     REPEAT drop
     cr . ."  words" cr
