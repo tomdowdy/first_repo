@@ -1,0 +1,121 @@
+\ MinForth V3.4 Startup commands in current work directory
+
+\ Example:: 
+\ .( File autoexec.mf included ) cr
+
+cr ." Starting autoexec.mf" cr
+
+: opening-message cr cr ." >>> Marker beginning-init created and will reset to an empty boot, i.e. prior to autoexec.mf." cr
+cr ." >>> Word 'reset' has been created."
+cr ." >>> Memory, 32 cells, have been allocated for a buffer name 'buff'."
+cr ." >>> 256 bytes have been allocated for temp1 and temp2, each."
+cr ." >>> opening-message displays this message."
+
+cr ." See git-autoexec.mf for additional word definitions." cr cr ;
+
+\ WARNING OFF
+
+marker beginning-init
+
+hex
+20 cells allocate swap constant buff drop
+: 0sp depth dup 0> if 0 do drop loop else drop then ;
+: fclear fdepth dup 0> if 0 do fdrop loop else drop then ;
+: reset s" reset_" evaluate s" marker reset_" evaluate 0sp fclear ;
+: " ( addr n -- caddr ) postpone s" dup pad c! pad 1+ swap cmove pad ; \ Like s" but leaves a counted address on stack.
+: is-immediate ' @ 020000 and 020000 / not ;
+: >caddr dup pad ! pad 1+ swap cmove pad ;
+\ : lwr>upr ( char -- CHAR ) dup $60 > if dup $7B < if $DF and then then ;
+: lwr>upr ( char -- CHAR ) dup $60 > over $7B < and if $DF and then ; \ Uses ascii character value.
+: lword>uword ( addr n -- ADDR N )  2dup 0 do dup c@ lwr>upr over c! 1 + loop drop ; \ Uses address and count.
+: _trav-curr get-current traverse-wordlist ;
+\ : _words-like name>string 2dup 2>r 2over search if 2drop 2r> type space else 2drop 2r> 2drop then true ;
+\ : _words-like name>string 2dup 2>r 2over search -rot 2drop if 2r> type space else 2r> 2drop then true ;
+
+: ascii bl word count drop c@ ;
+: dmp 10 4 * dump ;
+ff allocate drop constant temp1
+ff allocate drop constant temp2
+: >temp1 ( addr n -- ) dup temp1 dup >r c! r> 1+ swap cmove ;
+: >temp2 ( addr n -- ) dup temp2 dup >r c! r> 1+ swap cmove ;
+
+: _words-like name>string lword>uword 2dup 2>r 2over 
+search -rot 2drop if 2r> type space else 2r> 2drop then true ;
+
+: _a_words-like name>string lword>uword 2dup 2>r 2over 
+>temp2 \ new, store string to search for.
+>temp1 \ new, store string to search in.
+temp1 count temp2 count \ new
+search -rot 2drop if 2r> type space else 2r> 2drop then true ;
+
+: words.like bl word count lword>uword cr ['] _words-like _trav-curr cr 2drop ;
+\ There is a name>compile for words with no interpretation semantics, only compile semantics.
+: _xt>nt dup ['] name>interpret catch 0= if rot dup >r = if r> drop false else drop r> true then else 0 then ;
+\ xt>nt returns 0 for words with no interpretation semantics. 
+\ : xt>nt ['] _xt>nt trav-curr ;
+: xt>nt dup ['] _xt>nt _trav-curr 2dup = if 2drop 0 else swap drop then ; \ 0 if there is no nt, ie, invalid xt.
+\ find - does caddr -- xt flag if successful and xxxx flag if not. xxxx is an address and flag is 0.
+: caddr>nt ( caddr -- nt flag|flag ) find if xt>nt -1 else drop 0 then ; \ Returns 0 if word is not defined.
+: addrn>nt ( addr n -- nt ) >caddr caddr>nt ;
+: inp>nt ( Takes word from input stream and returns nt or 0. Usage: inp>nt <name> ) bl word caddr>nt ;
+: inp>xt bl word find drop ;
+: _words-begin name>string lword>uword 2over 2over drop swap drop c@ swap c@ = if type space else 2drop then true ;
+: words-begin bl word count lword>uword ['] _words-begin get-current traverse-wordlist 2drop ;
+: list-word-range ( stop start -- ) do i dup cr emit space ." -------" cr pad c! pad 1 ['] _words-begin get-current traverse-wordlist cr 2drop loop cr ;
+: alpha-list cr #97 #33 list-word-range #127 #123 list-word-range ;
+: _latest name>interpret 0 ;
+: latest ['] _latest _trav-curr ;
+: s>z ( n n -- f:n. n. ) swap s>f s>f ;
+' words.like alias wrds
+base @ decimal pi 2e f/ fconstant tau base !
+: .. . . ;
+: ... . . . ;
+: ndrop 0 do drop loop ;
+: xt>name xt>nt name>string type ;
+: msg dup ." TOS: " . ;
+: _make-pntr&obj create cell allot 64 cells allocate ;
+: _fail-msg ." Action failed: " . ;
+: dhere ." here " bl word count type ; \ For debugging. Usage dhere <input>. Prints here <input>.
+0 constant me 10 constant first-itm 
+\ : vv _make-pntr&obj 0<> if 999 _fail-msg abort else latest execute ! then does> @ inp>xt dup 0= if abort then execute ;
+: vv _make-pntr&obj 0<> if 999 _fail-msg abort else latest execute ! then does> @ inp>xt if execute + else drop 0 exit then ;
+
+
+false [if]
+Create structure. Usage size xx :strc <name>. xx is structure size in cells. Structure is initialized to 0's. 
+When <structure name> is invoked puts structure pointer address and structure address on stack. Pointer address @ yields
+structure address. Structure size is 2 cells larger than entered. First cell holds structure size (in cells) less the 2 first
+cells. Second cell is spare. Thus the total structure size is xx + 2 cells.
+
+This approach allows entire structure to easily be moved or copied. Less field names. Would like to store field names 
+with structure too.
+
+To store a value do: value <structure name> set.
+To retrieve a value do: <structure name> get. 
+[then]
+
+: :strc ( size -- ) dup cells ( size + 2 cells ) 2 cells + ( researve structure memory) allocate drop dup create cell allot latest execute dup >r ( temporarily save pointer address ) ! ( save structure size ) ! ( erase memory) r@ @ cell + r> @ @ cells cell + erase does> dup @ ; 
+
+: check-bounds 2dup + 3 pick @ >= if ." Out of bounds." 2drop 2drop exit then ; \ ( addr offset -- flag )
+\ For check-bounds, function assumes addr+offset contains the length of the field.
+: get check-bounds drop cells + swap drop 2 cells + @ ; \ ( addr offset -- value )
+: set check-bounds drop cells 2 cells + + swap drop ! ; \ ( value addr offset -- )
+: size @ swap drop ;
+: total-size swap drop @ 2 + ;
+: deallot negate allot ;
+: times ' , 0 do here cell - @ execute loop 1 deallot ;
+
+marker reset_
+
+init_my_stack
+
+cr ." Including aa.f" cr cr
+
+include C:\GitHub\first_repo\forth\mf348\aa.f
+
+opening-message
+
+
+
+
+
