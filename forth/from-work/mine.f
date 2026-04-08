@@ -57,7 +57,13 @@ variable dcnt 0 dcnt !
 	then 
 	swap >r dup >r 0 ?do , loop r> r> swap 0 ?do ,pop loop ;
 : >bos depth 1 - ntuck ;
-: ## base @ >r decimal 0 0 bl word count >number 2drop d>s r> base ! ; \ decimal prefix
+: ## BASE @ decimal bl LWORD NUMBER? drop SWAP BASE !
+STATE @
+IF
+	POSTPONE LITERAL
+THEN ; immediate
+: ,rstr dcnt @ ,ndrop ;
+decimal
 : +to postpone +-> ;
 : -to negate postpone +-> ;
 : narray ( n*items n <name> -- ) 
@@ -113,8 +119,8 @@ include C:\GitHub\first_repo\forth\from-work\dmp.f
 : dmpw ' >code dmp ; \ 'name' -- cfa mem dump
 : dmpxt >code dmp ; \ xt --- cfa mem dump
 : name. >name count type ; \ xt -- 'name'
-: find. find 1 = cr if ." Immediate." else ." Not immediate." then cr ; 
-: .find bl word find. ;
+: find. ( xt -- xt and flag ) >name find 1 = cr if ." Immediate." else ." Not immediate." then cr ; 
+: find> bl word find. ;
 $ 68 ' #cols >body ! \ change width of 'words' output
 : dw dmpw ;
 : dx dmpxt ;
@@ -216,13 +222,14 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 : pp postpone postpone ; immediate
 
 : hh history# ;
-
+hex
 : pWORDS  ( -- )
+\ pWords = page words
 	depth ,
+	true ,
     0 ,
     0 latest
-	true >tmpa
-    BEGIN  dup 0<> tmpa and
+    BEGIN  dup 0<> 1 ,pic and
     WHILE ( -- count NFA )
       	dup id. tab cr? ?pause
     	swap 1+ swap
@@ -234,14 +241,15 @@ include C:\GitHub\first_repo\forth\from-work\easy-noname.f
 				cr cr
 				key bl = 
 				if 
-					false >tmpa \ exit \ 2drop drop ,p drop exit 
+					false here 2 cells - ! 
 				then 
 				0 >hd
 			then
 		then
     REPEAT drop
     cr . ."  words" cr
-    ,p drop
+    ,drop
+	,drop
 	depth ,p - ndrop
 ;
 

@@ -6,7 +6,8 @@
 \ 0 in active.noname means no headless word is defined
 
 0 value active.noname
-: noname: active.noname , :noname ;
-: noname; postpone ; dup to active.noname ; immediate
+\ : noname: active.noname , :noname ;
+: noname: :noname ;
+: noname; postpone ; to active.noname ; immediate
 : noname active.noname execute ;
 : noname- active.noname >code here - allot 0 to active.noname ;
