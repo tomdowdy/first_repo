@@ -11,7 +11,7 @@ cr ." >>> Memory, 32 cells, have been allocated for a buffer name 'buff'."
 cr ." >>> 256 bytes have been allocated for temp1 and temp2, each."
 cr ." >>> opening-message displays this message."
 
-cr ." See git-autoexec.mf for additional word definitions." cr cr ;
+cr cr ." See git-autoexec.mf for additional word definitions." cr cr ;
 
 \ WARNING OFF
 
