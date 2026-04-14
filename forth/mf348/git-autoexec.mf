@@ -105,8 +105,6 @@ To retrieve a value do: <structure name> get.
 : deallot negate allot ;
 : times ' , 0 do here cell - @ execute loop 1 deallot ;
 
-marker reset_
-
 init_my_stack
 
 cr ." Including aa.f" cr cr
@@ -114,6 +112,9 @@ cr ." Including aa.f" cr cr
 include C:\GitHub\first_repo\forth\mf348\aa.f
 
 opening-message
+
+marker reset_
+
 
 
 
