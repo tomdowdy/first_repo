@@ -9,6 +9,8 @@ cr ." Starting autoexec.mf" cr
 cr ." >>> Word 'reset' has been created."
 cr ." >>> Memory, 32 cells, have been allocated for a buffer name 'buff'."
 cr ." >>> 256 bytes have been allocated for temp1 and temp2, each."
+cr ." >tempx words are character movement words to temp1 or 2 primarily for string storage."
+cr ." Usage: addr count >temp1, moves string at addr-addr+4 to temp1."
 cr ." >>> opening-message displays this message."
 
 cr cr ." See git-autoexec.mf for additional word definitions." cr cr ;
