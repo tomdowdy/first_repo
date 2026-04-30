@@ -56,9 +56,12 @@
 : h@ ( addr ) 4 get_bytes ;
 
 : rsrv_cell cell allot ;
-: make-stack ( n <name> -- ) create cells allocate drop dup , 0 swap ! does> @ dup @ ;   
-: psh ( n name -- saddr count ) 1+ 2dup swap ! cells + ! ; \ name puts user stack addr and count on the stack
-: pops ( name -- tos ) 2dup 1- swap ! cells + @ ; \ pops = pop tos
+
+\                                User stack actions
+: make-user-stack ( n <name> -- ) create cells allocate drop dup , 0 swap ! does> @ dup @ ;   
+: upsh ( n name -- saddr count ) 1+ 2dup swap ! cells + ! ; \ name puts user stack addr and count on the stack
+: upop ( name -- tos ) 2dup 1- swap ! cells + @ ; \ pops = pop tos
+
 
 \ something like each or nmap for items stored in memory
 \ xt can not change stack depth, just value of stack.
