@@ -13,6 +13,8 @@ cr ." >>> >tempx words are character movement words to temp1 or 2 primarily for 
 cr ." >>> Usage: addr count >temp1, moves string at addr-addr+4 to temp1."
 cr ." >>> opening-message displays this message."
 
+cr cr ." >>> Unique stack words:  msDEPTH, >ms, ms>, ms@, msDROP, msPICK, and msclear"
+
 cr cr ." See git-autoexec.mf for additional word definitions." cr cr ;
 
 \ WARNING OFF
@@ -73,7 +75,7 @@ base @ decimal pi 2e f/ fconstant tau base !
 : .. . . ;
 : ... . . . ;
 : ndrop 0 do drop loop ;
-: xt>name xt>nt name>string type ;
+: xt>name xt>nt dup 0= if drop exit then name>string type ;
 : msg dup ." TOS: " . ;
 : _make-pntr&obj create cell allot 64 cells allocate ;
 : _fail-msg ." Action failed: " . ;

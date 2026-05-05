@@ -26,6 +26,7 @@
 : rst_only s" _auto_mark_" evaluate ;
 : rst s" _auto_mark_ marker _auto_mark_" evaluate 0sp ;
 : cs 0sp ;
+: cp cs page ;
 : here- here cell- ;
 : nrev ( n ) \ reverse n stack items.
 	dup >r dup 0 do dup pick , 1- loop drop 
