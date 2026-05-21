@@ -73,6 +73,7 @@ decimal
 : naddr ( idx <narray name> -- addr ) ' >code 3 cells + swap cells + ; \ idx is the index of the item in the narray
 : mycfa postpone [ here postpone literal ] ; immediate
 : myxt postpone [ here code> postpone literal ] ; immediate
+: who-am-i myxt ;
 : $tolower >r r@ c@ r@ count 0 do dup c@ tolower over c! 1 + loop drop r> drop ;
 
 : $substr? ( $string $substring -- f ) 
