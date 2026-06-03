@@ -27,7 +27,31 @@
 : rst s" _auto_mark_ marker _auto_mark_" evaluate 0sp ;
 : cs 0sp ;
 : cp cs page ;
+
+\ -------------------------------------------------------
+\                                  here buffer
+
+\ words to use a here buffer
+
 : here- here cell- ;
+
+: hp here- @ ; \ Gets pointer stored at 'here - cell'. See below.
+\ hp (= here pointer) can be used to retrieve a pointer stored at 'here - cell'.
+\ Intended use case:
+\ here 22 cells allot , -------- this creates a 22 cell reserved memory space in the dictionary.
+\ The pointer to the start of that space is stored at 'here - cell (here-)'. Thus
+\ hp retrieves that pointer from which memory operations can start.
+\ do a '0 cell - allot -22 allot' to clean up. Alternately '-23 allot' cleans up.
+
+: hoff cells hp + ; \ hoff = here offset
+: h0 hp @ ;
+: h1 hp cell + @ ;
+: h2 2 hoff @ ;
+: h3 3 hoff @ ;
+: h4 4 hoff @ ;
+
+\ -------------------------------------------------------------------
+
 : nrev ( n ) \ reverse n stack items.
 	dup >r dup 0 do dup pick , 1- loop drop 
 	r@ 0 do drop loop r> 0 do pop loop ;
