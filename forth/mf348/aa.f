@@ -43,6 +43,8 @@
 \ hp retrieves that pointer from which memory operations can start.
 \ do a '0 cell - allot -22 allot' to clean up. Alternately '-23 allot' cleans up.
 
+: hinit ( n -- ) here cells allot , ; \ create a buffer of n cells with start pointer at 'here - cell'
+: hcleanup ( n -- ) 1 + 0 swap - allot ; \ releases memory used for buffer
 : hoff cells hp + ; \ hoff = here offset
 : h0 hp @ ;
 : h1 hp cell + @ ;
@@ -95,18 +97,21 @@
 
 \ like the dictionary stack, dstack, above but keeps count of items on dstack.
 \ do a ddrop when done with dstack to recover memory used for counter.
-\ slower than pop and stuff but keeps count of items.
+\ slower than pop and stuff but keeps count of items at 'here - cell'
+\ As items are pushed or poped, the count is moved to tos plus cell.
+
 : ,init s" marker _dstack_ " evaluate 0 , ; \ initialize counter to zero.
 : ,reset s" _dstack_" evaluate ; \ recovers memory.
-\ : ,. ( m -- ) here cell- @ 1+ ddrop swap , , ; \ push
+\ \\\\\\\\ : ,. ( m -- ) here cell- @ 1+ ddrop swap , , ; \ push
 : ,psh here cell- @ 1+ cell negate allot swap , , ;
 : ,depth here- @ ;
 : ,pop here cell- @ 1- 2 cells negate allot here @ swap , ; \ pop
 : ,peekn 2 + cells negate here + @ ;
 : ,npop 0 ,pop ;
-: ,p here cell - @ 0 cell - allot ;
-: ds>s ,depth 0 do ,pop loop ,reset ;
-: s>ds ,init depth 0 do ,. loop ;
+: ds>s ,depth 0 do ,pop loop ,reset ; \ dictionary stack to stack
+: s>ds ( *y *nx n -- *y ) ,init depth 0 do ,psh loop ; \ entire stack to new dictionary stack
+
+: ,p here cell - @ 0 cell - allot ; \ simple pop, does not use count
 
 \ 0 value _dstack_cntr_
 \ : ,init _dstack_cntr_ 0= if s" marker _dstack_" evaluate else 9898 throw then  ;
