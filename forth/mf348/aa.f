@@ -46,12 +46,16 @@
 : hinit ( n -- ) here cells allot , ; \ create a buffer of n cells with start pointer at 'here - cell'
 : hcleanup ( n -- ) 1 + 0 swap - allot ; \ releases memory used for buffer
 : hoff cells hp + ; \ hoff = here offset
-: h0 hp ;
-: h1 hp cell + ;
-: h2 2 hoff ;
-: h3 3 hoff ;
-: h4 4 hoff ;
-
+: h0 hp @ ;
+: h1 hp cell + @ ;
+: h2 2 hoff @ ;
+: h3 3 hoff @ ;
+: h4 4 hoff @ ;
+: h0, hp ! ;
+: h1, hp cell + ! ;
+: h2, 2 hoff ! ;
+: h3, 3 hoff ! ;
+: h4, 4 hoff ! ;
 \ -------------------------------------------------------------------
 
 : nrev ( n ) \ reverse n stack items.
