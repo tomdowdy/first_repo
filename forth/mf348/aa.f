@@ -75,6 +75,17 @@
 
 \ -------------------------------------------------------------------
 
+\ quick anonymous function
+
+: anon here cell - @ ; \  for anonymous functioin
+\ use like :noname and ; but start of anonymous function is stored
+\ at here 2 cells - and xt is stored at here cell -
+\ anon pulls xt address so @ execute will run item it
+: don here :noname ; \ for do anonymous (create a new anonymous function)
+: eon postpone ; swap , , ; immediate
+: ranon here 2 cells - @ here - allot ; \ reset anonymous structure
+
+
 : nrev ( n ) \ reverse n stack items.
 	dup >r dup 0 do dup pick , 1- loop drop 
 	r@ 0 do drop loop r> 0 do pop loop ;
