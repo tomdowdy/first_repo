@@ -33,9 +33,15 @@
 
 \ words to use a here buffer
 
+\ h0-4 can only be used if a 5 hinit is done first. This allows
+\ use of all 5 of the hx words. You can do less, for instance
+\ 2 hinit would allow use of h0 and h1, but h3-4 would be meaningless.
+
+\ hx behaves like a value.
+
 : here- here cell- ;
 
-: hp here- @ ; \ Gets pointer stored at 'here - cell'. See below.
+: hp here- @ ; \ Gets pointer stored at 'here - cell' location. See below.
 \ hp (= here pointer) can be used to retrieve a pointer stored at 'here - cell'.
 \ Intended use case:
 \ here 22 cells allot , -------- this creates a 22 cell reserved memory space in the dictionary.
@@ -43,16 +49,47 @@
 \ hp retrieves that pointer from which memory operations can start.
 \ do a '0 cell - allot -22 allot' to clean up. Alternately '-23 allot' cleans up.
 
+<<<<<<< HEAD
 : hinit ( n -- ) here swap cells allot , ; \ create a buffer of n cells with start pointer at 'here - cell'
 : hcleanup ( n -- ) 1 + cells 0 swap - allot ; \ releases memory used for buffer
+=======
+\ hinit creates a buffer of n cells with start pointer at cell prior to here.
+\ hinit makes sure the input parameter is not 0 and is not greater than 256.
+\ If using the h structure, you cannot push more onto the dictionary stack since
+\ the structure start pointer resides in the cell prior to here.
+\ You can create as many of the h structures as desired with the restriction that
+\ only the last structure can be used and you must do an hreset to access the one
+\ below the structure on the top of the dictionary stack.
+
+: hinit ( n -- ) depth 0= if 888 throw then dup 256 > if 889 throw then here swap cells allot , ; 
+
+\ : hreset ( n -- ) hp here swap - 0 swap - allot ; \ releases memory used for buffer
+: hreset ( -- ) 0 here here- @ - - allot ;
+>>>>>>> e9c5d76336ba1786494a61dae50d72f3752ef4f2
 : hoff cells hp + ; \ hoff = here offset
-: h0 hp ;
-: h1 hp cell + ;
-: h2 2 hoff ;
-: h3 3 hoff ;
-: h4 4 hoff ;
+: h0 hp @ ;
+: h1 hp cell + @ ;
+: h2 2 hoff @ ;
+: h3 3 hoff @ ;
+: h4 4 hoff @ ;
+: h0, hp ! ;
+: h1, hp cell + ! ;
+: h2, 2 hoff ! ;
+: h3, 3 hoff ! ;
+: h4, 4 hoff ! ;
 
 \ -------------------------------------------------------------------
+
+\ quick anonymous function
+
+: anon here cell - @ ; \  for anonymous functioin
+\ use like :noname and ; but start of anonymous function is stored
+\ at here 2 cells - and xt is stored at here cell -
+\ anon pulls xt address so @ execute will run item it
+: don here :noname ; \ for do anonymous (create a new anonymous function)
+: eon postpone ; swap , , ; immediate
+: ranon here 2 cells - @ here - allot ; \ reset anonymous structure
+
 
 : nrev ( n ) \ reverse n stack items.
 	dup >r dup 0 do dup pick , 1- loop drop 
@@ -111,7 +148,7 @@
 : ds>s ,depth 0 do ,pop loop ,reset ; \ dictionary stack to stack
 : s>ds ( *y *nx n -- *y ) ,init depth 0 do ,psh loop ; \ entire stack to new dictionary stack
 
-: ,p here cell - @ 0 cell - allot ; \ simple pop, does not use count
+: p@ here cell - @ ;
 
 \ 0 value _dstack_cntr_
 \ : ,init _dstack_cntr_ 0= if s" marker _dstack_" evaluate else 9898 throw then  ;
