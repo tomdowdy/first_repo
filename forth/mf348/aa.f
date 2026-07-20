@@ -148,6 +148,7 @@
 : ds>s ,depth 0 do ,pop loop ,reset ; \ dictionary stack to stack
 : s>ds ( *y *nx n -- *y ) ,init depth 0 do ,psh loop ; \ entire stack to new dictionary stack
 
+: ,p here cell - @ 0 cell - allot ; \ simple pop, does not use count, used with comma ,
 : p@ here cell - @ ;
 
 \ 0 value _dstack_cntr_
