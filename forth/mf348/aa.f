@@ -77,13 +77,13 @@
 
 \ quick anonymous function
 
-: anon here cell - @ ; \  for anonymous functioin
+: anon here cell - @ ; \  for anonymous function
 \ use like :noname and ; but start of anonymous function is stored
 \ at here 2 cells - and xt is stored at here cell -
-\ anon pulls xt address so @ execute will run item it
-: don here :noname ; \ for do anonymous (create a new anonymous function)
-: eon postpone ; swap , , ; immediate
-: ranon here 2 cells - @ here - allot ; \ reset anonymous structure
+\ anon pulls xt so 'execute' will run it
+: ban here :noname ; \ begin anonymous (create a new anonymous function)
+: ean postpone ; swap , , ; immediate \ end anonymous
+: dan here 2 cells - @ here - allot ; \ destroy anonymous structure
 
 
 : nrev ( n ) \ reverse n stack items.
@@ -135,9 +135,11 @@
 : ,init s" marker _dstack_ " evaluate 0 , ; \ initialize counter to zero.
 : ,reset s" _dstack_" evaluate ; \ recovers memory.
 \ \\\\\\\\ : ,. ( m -- ) here cell- @ 1+ ddrop swap , , ; \ push
-: ,psh here cell- @ 1+ cell negate allot swap , , ;
+\ : ,psh here cell- @ 1+ cell negate allot swap , , ;
+: ,psh ( n -- ) here cell - dup @ 1 + ( n h- cnt+ ) -rot ! , ;
 : ,depth here- @ ;
-: ,pop here cell- @ 1- 2 cells negate allot here @ swap , ; \ pop
+\ : ,pop here cell- @ 1- 2 cells negate allot here @ swap , ; \ pop
+: ,pop here cell - dup cell - @ swap @ 1 - ( n cnt- ) 0 2 cells - allot , ;
 : ,peekn 2 + cells negate here + @ ;
 : ,npop 0 ,pop ;
 : ds>s ,depth 0 do ,pop loop ,reset ; \ dictionary stack to stack

@@ -106,8 +106,8 @@ To retrieve a value do: <structure name> get.
 : set check-bounds drop cells 2 cells + + swap drop ! ; \ ( value addr offset -- )
 : size @ swap drop ;
 : total-size swap drop @ 2 + ;
-: deallot negate allot ;
-: times ' , 0 do here cell - @ execute loop 1 deallot ;
+: deallot cells negate allot ;
+: times ( xt repeat ) swap , 0 do here cell - @ execute loop 1 deallot ;
 
 init_my_stack
 
