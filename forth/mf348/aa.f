@@ -49,6 +49,7 @@
 \ hp retrieves that pointer from which memory operations can start.
 \ do a '0 cell - allot -22 allot' to clean up. Alternately '-23 allot' cleans up.
 
+: hinit ( n -- ) here swap cells allot , ; \ create a buffer of n cells with start pointer at 'here - cell'
 : hcleanup ( n -- ) 1 + cells 0 swap - allot ; \ releases memory used for buffer
 : hoff cells hp + ; \ hoff = here offset
 : h0 hp @ ;
