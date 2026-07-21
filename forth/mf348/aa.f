@@ -49,18 +49,7 @@
 \ hp retrieves that pointer from which memory operations can start.
 \ do a '0 cell - allot -22 allot' to clean up. Alternately '-23 allot' cleans up.
 
-\ hinit creates a buffer of n cells with start pointer at cell prior to here.
-\ hinit makes sure the input parameter is not 0 and is not greater than 256.
-\ If using the h structure, you cannot push more onto the dictionary stack since
-\ the structure start pointer resides in the cell prior to here.
-\ You can create as many of the h structures as desired with the restriction that
-\ only the last structure can be used and you must do an hreset to access the one
-\ below the structure on the top of the dictionary stack.
-
-: hinit ( n -- ) depth 0= if 888 throw then dup 256 > if 889 throw then here swap cells allot , ; 
-
-\ : hreset ( n -- ) hp here swap - 0 swap - allot ; \ releases memory used for buffer
-: hreset ( -- ) 0 here here- @ - - allot ;
+: hcleanup ( n -- ) 1 + cells 0 swap - allot ; \ releases memory used for buffer
 : hoff cells hp + ; \ hoff = here offset
 : h0 hp @ ;
 : h1 hp cell + @ ;
@@ -80,10 +69,17 @@
 : anon here cell - @ ; \  for anonymous function
 \ use like :noname and ; but start of anonymous function is stored
 \ at here 2 cells - and xt is stored at here cell -
+<<<<<<< HEAD
 \ anon pulls xt so 'execute' will run it
 : ban here :noname ; \ begin anonymous (create a new anonymous function)
 : ean postpone ; swap , , ; immediate \ end anonymous
 : dan here 2 cells - @ here - allot ; \ destroy anonymous structure
+=======
+\ anon pulls xt address so @ execute will run item it
+: dan here :noname ; \ for do anonymous (create a new anonymous function)
+: ean postpone ; swap , , ; immediate
+: ranon here 2 cells - @ here - allot ; \ reset anonymous structure
+>>>>>>> 0f9822f018732efcb501c249c81e19512e93b087
 
 
 : nrev ( n ) \ reverse n stack items.
