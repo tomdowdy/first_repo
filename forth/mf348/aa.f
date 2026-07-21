@@ -70,18 +70,11 @@
 : anon here cell - @ ; \  for anonymous function
 \ use like :noname and ; but start of anonymous function is stored
 \ at here 2 cells - and xt is stored at here cell -
-<<<<<<< HEAD
+\ <<<<<<< HEAD
 \ anon pulls xt so 'execute' will run it
 : ban here :noname ; \ begin anonymous (create a new anonymous function)
 : ean postpone ; swap , , ; immediate \ end anonymous
 : dan here 2 cells - @ here - allot ; \ destroy anonymous structure
-=======
-\ anon pulls xt address so @ execute will run item it
-: dan here :noname ; \ for do anonymous (create a new anonymous function)
-: ean postpone ; swap , , ; immediate
-: ranon here 2 cells - @ here - allot ; \ reset anonymous structure
->>>>>>> 0f9822f018732efcb501c249c81e19512e93b087
-
 
 : nrev ( n ) \ reverse n stack items.
 	dup >r dup 0 do dup pick , 1- loop drop 
